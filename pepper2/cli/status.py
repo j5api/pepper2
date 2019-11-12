@@ -2,19 +2,19 @@
 
 import click
 from gi.repository import GLib
-from pydbus import SessionBus
+from pydbus import SystemBus
 
 
 @click.command()
 def status() -> None:
     """Get the status of pepper2."""
-    bus = SessionBus()
+    bus = SystemBus()
 
     try:
-        controller = bus.get("uk.org.j5.pepper2.Controller")
+        controller = bus.get("uk.org.j5.pepper2")
 
-        print(f"Pepper2 - Robot Control Daemon v{controller.GetVersion()}")
-        print(f"\tStatus: {controller.GetStatus()}")
+        print(f"Pepper2 - Robot Control Daemon v{controller.get_version()}")
+        print(f"\tStatus: {controller.get_status()}")
     except GLib.Error as e:
         if "org.freedesktop.DBus.Error.ServiceUnknown" in e.message:
             click.echo("Unable to connect to pepperd.", err=True)
