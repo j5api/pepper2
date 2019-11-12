@@ -4,6 +4,15 @@ Robot Management Daemon
 
 ![Wouldn't you like to be a pepper too?](https://i.imgur.com/B2BBwz1.gif)
 
+## Dependencies
+
+Some of the dependencies for pepper2 are not available on PyPI.
+
+- [GLib](https://developer.gnome.org/glib/) 2.46+
+- [girepository](https://wiki.gnome.org/Projects/GObjectIntrospection) 1.46+
+
+These packages can usually be found on systems with a desktop interface anyway.
+
 ## Contributions
 
 This project is released under the MIT Licence. For more information, please see LICENSE.
