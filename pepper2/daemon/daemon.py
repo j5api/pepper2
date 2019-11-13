@@ -20,8 +20,6 @@ def main() -> None:
     """Main function for pepperd."""
     logging.basicConfig(level=logging.DEBUG)
 
-    LOGGER.info(f"Starting v{__version__}.")
-
     pepperd = PepperDaemon()
 
     try:
@@ -33,6 +31,7 @@ def main() -> None:
 class PepperDaemon:
 
     def __init__(self):
+        LOGGER.info(f"Starting v{__version__}.")
         try:
             # Publish our controller on the bus.
             bus.publish("uk.org.j5.pepper2", Controller(loop))
