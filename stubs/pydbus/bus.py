@@ -3,7 +3,7 @@ Stubs for pydbus.bus.
 
 The stubs in this file do not necessarily match the structure of pydbus.
 """
-from typing import Any
+from typing import Any, Optional
 
 from .publication import Publication
 
@@ -11,7 +11,7 @@ from .publication import Publication
 class Bus:
     """Represents a DBus Bus."""
 
-    def get(self, bus_name: str) -> Any: ...
+    def get(self, bus_name: str, object: Optional[str] = None) -> Any: ...
     def publish(self, bus_name: str, *objects: Any) -> Publication: ...
 
 
