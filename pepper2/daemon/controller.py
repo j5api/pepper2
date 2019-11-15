@@ -1,9 +1,11 @@
 """Pepperd Controller Service."""
 import logging
+from typing import List
 
 from gi.repository import GLib
 
 from pepper2 import __version__
+from .usbinfo import USBInfo
 
 LOGGER = logging.getLogger(__name__)
 
@@ -20,12 +22,18 @@ class Controller:  # noqa: D400 D205 D208
                 <method name='get_status'>
                     <arg type='s' name='status' direction='out'/>
                 </method>
+                <method name='get_drive_statuses'>
+                    <arg type='as' name='drives' direction='out'/>
+                </method>
             </interface>
         </node>
     """
 
     def __init__(self, loop: GLib.MainLoop):
         self.loop = loop
+        self.usb_infos: List[USBInfo] = []
+
+    # DBus Methods
 
     def get_version(self) -> str:
         """Get the version of pepper2."""
@@ -35,4 +43,11 @@ class Controller:  # noqa: D400 D205 D208
     def get_status(self) -> str:
         """Get the status of pepper2."""
         LOGGER.debug("Status request over bus.")
-        return "Awaiting Code Injection Event"
+        return f"Ready."
+
+    def get_drive_statuses(self) -> List[str]:
+        """Get the drive statuses."""
+        statuses = []
+        for d in self.usb_infos:
+            statuses.append(f"{d.mount_path}: Unknown")
+        return statuses

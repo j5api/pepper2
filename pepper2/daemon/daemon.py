@@ -65,14 +65,6 @@ class PepperDaemon:
         self.disk_signal_handler.disconnect()
         loop.quit()
 
-    def handle_mount(self, usb_info: USBInfo) -> None:
-        """Handle a disk mount event."""
-        print(f"Mounted: {usb_info}")
-
-    def handle_cleanup(self, usb_info: USBInfo) -> None:
-        """Handle a disk cleanup event."""
-        print(f"Removed: {usb_info}")
-
 
 if __name__ == "__main__":
     main()

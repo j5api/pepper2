@@ -1,16 +1,15 @@
 """USBInfo class."""
 
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Dict
 
 
+@dataclass
 class USBInfo:
     """Represents Information about an inserted USB."""
 
-    def __init__(self) -> None:
-        pass
-
-    @classmethod
-    def from_dbus_data(cls, path: str, event_data: Dict[str, str]) -> 'USBInfo':
-        """Create USBInfo from D-Bus data."""
-        pass
+    dbus_job_path: str
+    dbus_fs_path: str
+    dbus_drive_path: str
+    mount_path: Path

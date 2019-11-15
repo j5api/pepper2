@@ -11,6 +11,7 @@ from typing import Dict
 from pydbus.bus import Bus
 
 from .controller import Controller
+from .usbinfo import USBInfo
 
 LOGGER = logging.getLogger(__name__)
 
@@ -58,8 +59,13 @@ class UDisksController:
 
                 if mount_path.exists():
                     LOGGER.info(f"Drive mounted: {mount_path}")
-                    # usb_info =
-                    # self.handle_mount(mount_path)
+                    usb_info = USBInfo(
+                        dbus_job_path=path,
+                        dbus_fs_path=disk_bus_path,
+                        dbus_drive_path=block_device.Drive,
+                        mount_path=mount_path,
+                    )
+                    self.controller.usb_infos.append(usb_info)
                 else:
                     LOGGER.warning(
                         f"Unreadable drive mounted: {mount_path}",
@@ -73,4 +79,4 @@ class UDisksController:
 
     def handle_cleanup_event(self, path: str, event_data: Dict[str, str]) -> None:
         """Handle a cleanup event."""
-        print(event_data)
+        self.controller.usb_infos = []
