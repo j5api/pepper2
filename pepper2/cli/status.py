@@ -13,7 +13,7 @@ def status() -> None:
     try:
         controller = bus.get("uk.org.j5.pepper2")
 
-        print(f"Pepper2 - Robot Control Daemon v{controller.get_version()}")
+        print(f"Pepper2 - Robot Management Daemon v{controller.get_version()}")
         print(f"\tStatus: {controller.get_status()}")
         statuses = controller.get_drive_statuses()
         print(f"\t{len(statuses)} drives registered")
@@ -21,7 +21,7 @@ def status() -> None:
             print(f"\t\t{drive}")
     except GLib.Error as e:
         if "org.freedesktop.DBus.Error.ServiceUnknown" in e.message:
-            click.echo("Unable to connect to pepperd.", err=True)
-            click.echo("Is pepperd running?.", err=True)
+            print(f"Pepper2 - Robot Management Daemon")
+            print(f"\tStatus: Not Found.")
         else:
             raise
