@@ -37,6 +37,7 @@ class UDisksController:
 
                     if event_data["Operation"] == "cleanup":
                         LOGGER.info(f"Removal Event detected at {path}")
+                        sleep(0.3)
                         self.handle_cleanup_event(path, event_data)
 
     def handle_mount_event(self, path: str, event_data: Dict[str, str]) -> None:
@@ -81,4 +82,14 @@ class UDisksController:
     def handle_cleanup_event(self, path: str, event_data: Dict[str, str]) -> None:
         """Handle a cleanup event."""
         with self.controller.data_lock:
-            self.controller.usb_infos = []
+            # We have no information to tell which drive left.
+            # Thus we need to check.
+            updated_info = []
+            for drive in self.controller.usb_infos:
+                if drive.mount_path.exists():
+                    updated_info.append(drive)
+                else:
+                    LOGGER.info(f"Drive removed: {drive.mount_path}")
+            self.controller.usb_infos = updated_info
+
+
