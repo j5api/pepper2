@@ -1,10 +1,12 @@
 """Pepperd Controller Service."""
 import logging
+from threading import Lock
 from typing import List
 
 from gi.repository import GLib
 
 from pepper2 import __version__
+
 from .usbinfo import USBInfo
 
 LOGGER = logging.getLogger(__name__)
@@ -31,7 +33,10 @@ class Controller:  # noqa: D400 D205 D208
 
     def __init__(self, loop: GLib.MainLoop):
         self.loop = loop
-        self.usb_infos: List[USBInfo] = []
+        self.data_lock = Lock()
+
+        with self.data_lock:
+            self.usb_infos: List[USBInfo] = []
 
     # DBus Methods
 
@@ -48,6 +53,8 @@ class Controller:  # noqa: D400 D205 D208
     def get_drive_statuses(self) -> List[str]:
         """Get the drive statuses."""
         statuses = []
-        for d in self.usb_infos:
+        with self.data_lock:
+            current_data = self.usb_infos
+        for d in current_data:
             statuses.append(f"{d.mount_path}: Unknown")
         return statuses

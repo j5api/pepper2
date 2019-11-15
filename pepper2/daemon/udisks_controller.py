@@ -65,7 +65,8 @@ class UDisksController:
                         dbus_drive_path=block_device.Drive,
                         mount_path=mount_path,
                     )
-                    self.controller.usb_infos.append(usb_info)
+                    with self.controller.data_lock:
+                        self.controller.usb_infos.append(usb_info)
                 else:
                     LOGGER.warning(
                         f"Unreadable drive mounted: {mount_path}",
@@ -79,4 +80,5 @@ class UDisksController:
 
     def handle_cleanup_event(self, path: str, event_data: Dict[str, str]) -> None:
         """Handle a cleanup event."""
-        self.controller.usb_infos = []
+        with self.controller.data_lock:
+            self.controller.usb_infos = []

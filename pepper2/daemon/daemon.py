@@ -9,7 +9,6 @@ from pepper2 import __version__
 
 from .controller import Controller
 from .udisks_controller import UDisksController
-from .usbinfo import USBInfo
 
 LOGGER = logging.getLogger(__name__)
 
@@ -40,7 +39,9 @@ class PepperDaemon:
         self.udisks_controller = UDisksController(bus, self.controller)
 
         self._start()
-        self.disk_signal_handler = bus.get(".UDisks2").InterfacesAdded.connect(self.udisks_controller.disk_signal)
+        self.disk_signal_handler = bus.get(".UDisks2").InterfacesAdded.connect(
+            self.udisks_controller.disk_signal,
+        )
 
         notify("READY=1")
         LOGGER.info(f"Ready.")
