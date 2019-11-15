@@ -10,14 +10,17 @@ from typing import Dict
 
 from pydbus.bus import Bus
 
+from .controller import Controller
+
 LOGGER = logging.getLogger(__name__)
 
 
 class UDisksController:
     """Talk to UDisks2 over D-Bus."""
 
-    def __init__(self, bus: Bus):
+    def __init__(self, bus: Bus, controller: Controller):
         self.bus = bus
+        self.controller = controller
 
     def disk_signal(self, path: str, data: Dict[str, Dict[str, str]]) -> None:
         """Handle a disk signal event from UDisks2."""

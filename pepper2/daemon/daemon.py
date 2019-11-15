@@ -20,7 +20,7 @@ bus = SystemBus()
 
 def main() -> None:
     """Main function for pepperd."""
-    logging.basicConfig(level=logging.DEBUG)
+    logging.basicConfig(level=logging.INFO)
 
     pepperd = PepperDaemon()
 
@@ -37,8 +37,16 @@ class PepperDaemon:
         LOGGER.info(f"Starting v{__version__}.")
 
         self.controller = Controller(loop)
-        self.udisks_controller = UDisksController(bus)
+        self.udisks_controller = UDisksController(bus, self.controller)
 
+        self._start()
+        self.disk_signal_handler = bus.get(".UDisks2").InterfacesAdded.connect(self.udisks_controller.disk_signal)
+
+        notify("READY=1")
+        LOGGER.info(f"Ready.")
+
+    def _start(self) -> None:
+        """Start the daemon."""
         try:
             # Publish our controller on the bus.
             bus.publish("uk.org.j5.pepper2", self.controller)
@@ -50,16 +58,6 @@ class PepperDaemon:
             else:
                 raise
 
-        # Subscribe to udisks
-        self.disk_signal_handler = bus.get(".UDisks2").InterfacesAdded.connect(self.udisks_controller.disk_signal)
-
-        notify("READY=1")
-        LOGGER.info(f"Ready.")
-
-    def _start(self) -> None:
-        """Start the daemon."""
-        pass
-
     def stop(self) -> None:
         """Stop the daemon."""
         notify("STOPPING=1")
@@ -69,11 +67,11 @@ class PepperDaemon:
 
     def handle_mount(self, usb_info: USBInfo) -> None:
         """Handle a disk mount event."""
-        print(usb_info)
+        print(f"Mounted: {usb_info}")
 
     def handle_cleanup(self, usb_info: USBInfo) -> None:
         """Handle a disk cleanup event."""
-        print("remove")
+        print(f"Removed: {usb_info}")
 
 
 if __name__ == "__main__":

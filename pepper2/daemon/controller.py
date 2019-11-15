@@ -10,6 +10,8 @@ LOGGER = logging.getLogger(__name__)
 
 class Controller:  # noqa: D400 D205 D208
     """
+        <!-- Daemon Controller -->
+        <!-- All state should be stored on this class. -->
         <node>
             <interface name='uk.org.j5.pepper2.Controller'>
                 <method name='get_version'>
