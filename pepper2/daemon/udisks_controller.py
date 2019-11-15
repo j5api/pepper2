@@ -91,5 +91,3 @@ class UDisksController:
                 else:
                     LOGGER.info(f"Drive removed: {drive.mount_path}")
             self.controller.usb_infos = updated_info
-
-

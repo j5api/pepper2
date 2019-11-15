@@ -1,5 +1,6 @@
 """Pepperd Controller Service."""
 import logging
+from enum import Enum
 from threading import Lock
 from typing import List
 
@@ -12,10 +13,19 @@ from .usbinfo import USBInfo
 LOGGER = logging.getLogger(__name__)
 
 
+class ControllerStatus(str, Enum):
+    """Status Enum."""
+
+    STARTING = "starting"
+    READY = "ready"
+    STOPPING = "stopping"
+
+
 class Controller:  # noqa: D400 D205 D208
     """
         <!-- Daemon Controller -->
         <!-- All state should be stored on this class. -->
+        <!-- This XML is read by pydbus. -->
         <node>
             <interface name='uk.org.j5.pepper2.Controller'>
                 <method name='get_version'>
@@ -32,6 +42,7 @@ class Controller:  # noqa: D400 D205 D208
     """
 
     def __init__(self, loop: GLib.MainLoop):
+        self.status = ControllerStatus.STARTING
         self.loop = loop
         self.data_lock = Lock()
 
@@ -48,7 +59,7 @@ class Controller:  # noqa: D400 D205 D208
     def get_status(self) -> str:
         """Get the status of pepper2."""
         LOGGER.debug("Status request over bus.")
-        return f"Ready."
+        return str(self.status.value)
 
     def get_drive_statuses(self) -> List[str]:
         """Get the drive statuses."""
