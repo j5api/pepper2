@@ -1,6 +1,7 @@
 """Pepperd App."""
 import logging
 
+import click
 from gi.repository import GLib
 from pydbus import SystemBus
 from systemd.daemon import notify
@@ -18,9 +19,14 @@ loop = GLib.MainLoop()
 bus = SystemBus()
 
 
-def main() -> None:
-    """Main function for pepperd."""
-    logging.basicConfig(level=logging.INFO)
+@click.command("pepperd")
+@click.option('-v', '--verbose', is_flag=True)
+def main(*, verbose: bool) -> None:
+    """Pepper2 Daemon."""
+    if verbose:
+        logging.basicConfig(level=logging.DEBUG)
+    else:
+        logging.basicConfig(level=logging.INFO)
 
     pepperd = PepperDaemon()
 

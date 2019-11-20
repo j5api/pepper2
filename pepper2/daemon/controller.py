@@ -70,6 +70,7 @@ class Controller:  # noqa: D400 D205 D208
 
     def get_drive_list(self) -> List[str]:
         """Get a list of drives."""
+        LOGGER.debug("Drive list request over bus.")
         return [x for x in self.drive_group.keys()]
 
     def get_drive(self, uuid: str) -> Tuple[bool, str, str, int]:
@@ -78,11 +79,14 @@ class Controller:  # noqa: D400 D205 D208
 
         :returns Tuple of (success, uuid, mount_path, type_id)
         """
+        LOGGER.debug(f"Drive info request for \"{uuid}\" over bus.")
         if uuid in self.drive_group.keys():
             drive = self.drive_group[uuid]
+            LOGGER.debug(f"Found drive \"{drive.uuid}\" at {drive.mount_path}")
             return True,\
                 drive.uuid,\
                 str(drive.mount_path.absolute()),\
                 drive.drive_type.value
         else:
+            LOGGER.debug(f"No such drive \"{uuid}\"")
             return False, "", "", -1
