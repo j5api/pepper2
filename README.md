@@ -27,7 +27,7 @@ There are two programs in this repo, with shared code between them.
     - Triggers run and stop events for USBs, based on a set of conditions.
     
 In order to run `pepperd`, we need to tell D-Bus that we have permission to create a service on the System Bus.
-This can be done by placing `pepper2-dbus.conf` in `/etc/dbus-1/pepper2-bus.conf`.
+This can be done by placing a config file in `/etc/dbus-1/pepper2-bus.conf`.
 
 ## Future Development
 
@@ -66,6 +66,25 @@ This program makes heavy use of D-Bus, which is not the simplest thing in the wo
 
 - [DBus Overview](https://pythonhosted.org/txdbus/dbus_overview.html)
 - [D-Feet](https://github.com/GNOME/d-feet)
+
+### Example D-Bus Config:
+
+```xml
+<!DOCTYPE busconfig PUBLIC
+          "-//freedesktop//DTD D-BUS Bus Configuration 1.0//EN"
+          "http://www.freedesktop.org/standards/dbus/1.0/busconfig.dtd">
+<busconfig>
+  <policy user="root">
+    <allow own="uk.org.j5.pepper2"/>
+  </policy>
+
+  <policy context="default">
+    <allow send_destination="uk.org.j5.pepper2"/>
+    <allow receive_sender="uk.org.j5.pepper2"/>
+  </policy>
+</busconfig>
+
+```
 
 ## Contributions
 
