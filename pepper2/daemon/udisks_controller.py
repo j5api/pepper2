@@ -11,7 +11,7 @@ from typing import Dict
 from pydbus.bus import Bus
 
 from .controller import Controller
-from .usbinfo import USBInfo
+from pepper2.usbinfo import USBInfo
 
 LOGGER = logging.getLogger(__name__)
 

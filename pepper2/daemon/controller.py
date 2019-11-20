@@ -1,6 +1,5 @@
 """Pepperd Controller Service."""
 import logging
-from enum import Enum
 from threading import Lock
 from typing import List
 
@@ -9,7 +8,7 @@ from gi.repository import GLib
 from pepper2 import __version__
 from pepper2.status import DaemonStatus
 
-from .usbinfo import USBInfo
+from pepper2.usbinfo import USBInfo
 
 LOGGER = logging.getLogger(__name__)
 
