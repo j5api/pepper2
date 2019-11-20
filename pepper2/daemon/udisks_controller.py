@@ -6,7 +6,7 @@ Abstract and talk to UDisks.
 import logging
 from pathlib import Path
 from time import sleep
-from typing import Dict
+from typing import Dict, List
 
 from pydbus.bus import Bus
 
@@ -24,6 +24,17 @@ class UDisksController:
         self.bus = bus
         self.controller = controller
 
+    @staticmethod
+    def bytes_to_path(data: List[int]) -> Path:
+        """Convert a null terminated int array to a path."""
+        # Data is null terminated.
+        mount_point = data[:len(data) - 1]
+
+        chars = [chr(x) for x in mount_point]
+        mount_point_str = "".join(chars)
+
+        return Path(mount_point_str)
+
     def disk_signal(self, path: str, data: Dict[str, Dict[str, str]]) -> None:
         """Handle a disk signal event from UDisks2."""
         LOGGER.debug(f"Received event from {path}")
@@ -32,12 +43,12 @@ class UDisksController:
                 event_data = data[job]
                 if "Operation" in event_data.keys():
                     if event_data["Operation"] == "filesystem-mount":
-                        LOGGER.info(f"Mount Event detected at {path}")
+                        LOGGER.debug(f"Mount Event detected at {path}")
                         sleep(0.3)
                         self.handle_mount_event(event_data)
 
                     if event_data["Operation"] == "cleanup":
-                        LOGGER.info(f"Removal Event detected at {path}")
+                        LOGGER.debug(f"Removal Event detected at {path}")
                         sleep(0.3)
                         self.handle_cleanup_event(event_data)
 
@@ -52,16 +63,11 @@ class UDisksController:
                 # We are only interested in the first mountpoint.
                 mount_point = mount_points[0]
 
-                # Data is null terminated.
-                mount_point = mount_point[:len(mount_point) - 1]
-
-                chars = map(chr, mount_point)
-                mount_point_str = "".join(chars)
-                mount_path = Path(mount_point_str)
+                mount_path = UDisksController.bytes_to_path(mount_point)
 
                 if mount_path.exists():
                     drive = Drive(
-                        uuid=block_device.UUID,
+                        uuid=block_device.IdUUID,
                         mount_path=mount_path,
                         drive_type=DriveType.NO_ACTION,  # Ignore everything for now.
                     )
@@ -91,3 +97,42 @@ class UDisksController:
                     removed_drives.append(drive.uuid)
             for uuid in removed_drives:
                 self.controller.drive_group.pop(uuid)
+
+    def detect_initial_drives(self) -> None:
+        """Detect and register drives as startup."""
+        logging.info("Checking for initial drives at startup.")
+        udisks = self.bus.get(".UDisks2")
+        managed_objects = udisks.GetManagedObjects()
+        block_devices = {
+            x: managed_objects[x]
+            for x in managed_objects.keys()
+            if x.startswith("/org/freedesktop/UDisks2/block_devices/")
+        }
+        for path, data in block_devices.items():
+            logging.debug(f"Checking drive at {path}")
+            if 'org.freedesktop.UDisks2.Filesystem' in data.keys():
+                filesystem = data['org.freedesktop.UDisks2.Filesystem']
+                if 'MountPoints' in filesystem.keys():
+                    mountpoints = filesystem['MountPoints']
+                    if len(mountpoints) > 0:
+                        mount_point = UDisksController.bytes_to_path(
+                            mountpoints[0],
+                        )
+                        if mount_point.exists():
+
+                            if 'org.freedesktop.UDisks2.Block' in data.keys():
+                                block = data['org.freedesktop.UDisks2.Block']
+
+                                if 'IdUUID' in block.keys():
+
+                                    drive = Drive(
+                                        uuid=block["IdUUID"],
+                                        mount_path=mount_point,
+                                        drive_type=DriveType.NO_ACTION,
+                                        # Ignore everything for now.
+                                    )
+                                    LOGGER.info(
+                                        f"Drive {drive.uuid} mounted: {drive.mount_path}",
+                                    )
+                                    with self.controller.data_lock:
+                                        self.controller.drive_group[drive.uuid] = drive

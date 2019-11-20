@@ -50,6 +50,8 @@ class PepperDaemon:
             self.udisks_controller.disk_signal,
         )
 
+        self.udisks_controller.detect_initial_drives()
+
         self.controller.status = DaemonStatus.READY
         notify("READY=1")
         LOGGER.info(f"Ready.")
