@@ -35,12 +35,24 @@ class Controller:  # noqa: D400 D205 D208
     """
 
     def __init__(self, loop: GLib.MainLoop):
-        self.status = DaemonStatus.STARTING
+        self._status = DaemonStatus.STARTING
         self.loop = loop
         self.data_lock = Lock()
 
         with self.data_lock:
             self.usb_infos: List[USBInfo] = []
+
+    @property
+    def status(self) -> DaemonStatus:
+        """Current status of the daemon."""
+        with self.data_lock:
+            return self._status
+
+    @status.setter
+    def status(self, status: DaemonStatus) -> None:
+        """Current status of the daemon."""
+        with self.data_lock:
+            self._status = status
 
     # DBus Methods
 
