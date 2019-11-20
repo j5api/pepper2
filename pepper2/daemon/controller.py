@@ -7,7 +7,6 @@ from gi.repository import GLib
 
 from pepper2 import __version__
 from pepper2.status import DaemonStatus
-
 from pepper2.usbinfo import USBInfo
 
 LOGGER = logging.getLogger(__name__)

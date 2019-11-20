@@ -1,19 +1,25 @@
 """Classes to interact with the pepper2 API."""
 
+from typing import TYPE_CHECKING
+
 from gi.repository import GLib
 from pydbus import SystemBus
 
 from .error import Pepper2Exception
 from .status import DaemonStatus
 
+if TYPE_CHECKING:
+    from pepper2.daemon.controller import Controller
+
 
 class Pepper2:
+    """Class to interact with pepper2 daemon."""
 
     def __init__(
-            self,
-            *,
-            controller_endpoint: str = "uk.org.j5.pepper2",
-     ) -> None:
+        self,
+        *,
+        controller_endpoint: str = "uk.org.j5.pepper2",
+    ) -> None:
         self._controller_endpoint = controller_endpoint
 
         self._connect()
@@ -26,7 +32,7 @@ class Pepper2:
             raise Pepper2Exception("Unable to connect to system bus.") from e
 
         try:
-            self._controller = self._bus.get(self._controller_endpoint)
+            self._controller: Controller = self._bus.get(self._controller_endpoint)
         except GLib.Error as e:
             raise Pepper2Exception("Unable to find daemon on bus.") from e
 
