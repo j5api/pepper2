@@ -1,7 +1,7 @@
 """Pepperd Controller Service."""
 import logging
 from threading import Lock
-from typing import List
+from typing import List, Tuple
 
 from gi.repository import GLib
 
@@ -25,8 +25,12 @@ class Controller:  # noqa: D400 D205 D208
                 <method name='get_status'>
                     <arg type='s' name='status' direction='out'/>
                 </method>
-                <method name='get_drive_statuses'>
+                <method name='get_drive_list'>
                     <arg type='as' name='drives' direction='out'/>
+                </method>
+                <method name='get_drive'>
+                    <arg type='s' name='uuid' direction='in' />
+                    <arg type='(bssi)' name='drive' direction='out' />
                 </method>
             </interface>
         </node>
@@ -64,6 +68,21 @@ class Controller:  # noqa: D400 D205 D208
         LOGGER.debug("Status request over bus.")
         return str(self.status.value)
 
-    def get_drive_statuses(self) -> List[str]:
-        """Get the drive statuses."""
-        return ["Not Implemented"]
+    def get_drive_list(self) -> List[str]:
+        """Get a list of drives."""
+        return [x for x in self.drive_group.keys()]
+
+    def get_drive(self, uuid: str) -> Tuple[bool, str, str, int]:
+        """
+        Get an individual drive.
+
+        :returns Tuple of (success, uuid, mount_path, type_id)
+        """
+        if uuid in self.drive_group.keys():
+            drive = self.drive_group[uuid]
+            return True,\
+                drive.uuid,\
+                str(drive.mount_path.absolute()),\
+                drive.drive_type.value
+        else:
+            return False, "", "", -1

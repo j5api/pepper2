@@ -16,7 +16,7 @@ def status() -> None:
 
     print(f"Pepper2 - Robot Management Daemon v{pepper2.daemon_version}")
     print(f"\tStatus: {pepper2.daemon_status.name}")
-    # statuses = controller.get_drive_statuses()
-    # print(f"\t{len(statuses)} drives registered")
-    # for drive in statuses:
-    #     print(f"\t\t{drive}")
+    drives = pepper2.drives
+    print(f"\t{len(drives)} drives currently registered.")
+    for drive in drives.values():
+        print(f"\t\t{drive.drive_type.name}: {drive.mount_path}")

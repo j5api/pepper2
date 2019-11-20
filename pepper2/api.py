@@ -1,11 +1,12 @@
 """Classes to interact with the pepper2 API."""
 
+from pathlib import Path
 from typing import TYPE_CHECKING
 
 from gi.repository import GLib
 from pydbus import SystemBus
 
-from .drives import DriveGroup
+from .drives import Drive, DriveGroup, DriveType
 from .error import Pepper2Exception
 from .status import DaemonStatus
 
@@ -62,5 +63,39 @@ class Pepper2:
 
     @property
     def drives(self) -> DriveGroup:
-        """Get information about detected drives."""
-        return {}
+        """
+        Get information about detected drives.
+
+        This method could definitely be made more efficient.
+        """
+        drive_group = {}
+
+        try:
+            drive_list = self._controller.get_drive_list()
+        except GLib.Error as e:
+            raise Pepper2Exception("Error fetching drive list from daemon.") from e
+
+        for drive_uuid in drive_list:
+            drive_group[drive_uuid] = self.get_drive(drive_uuid)
+        return drive_group
+
+    def get_drive(self, uuid: str) -> Drive:
+        """Get a drive by uuid."""
+        try:
+            raw_data = self._controller.get_drive(uuid)
+        except GLib.Error as e:
+            raise Pepper2Exception("Error fetching drive data from daemon.") from e
+
+        if raw_data[0] == -1:
+            raise ValueError(f"No such drive {uuid}")
+
+        try:
+            drive_type = DriveType(raw_data[3])
+        except ValueError as e:
+            raise Pepper2Exception("Unknown drive type code.") from e
+
+        return Drive(
+            uuid=raw_data[1],
+            mount_path=Path(raw_data[2]),
+            drive_type=drive_type,
+        )
