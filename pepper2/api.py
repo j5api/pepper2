@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING
 from gi.repository import GLib
 from pydbus import SystemBus
 
+from .drives import DriveGroup
 from .error import Pepper2Exception
 from .status import DaemonStatus
 
@@ -58,3 +59,8 @@ class Pepper2:
             raise Pepper2Exception(
                 f"Received unknown status string from daemon: {status_string}",
             )
+
+    @property
+    def drives(self) -> DriveGroup:
+        """Get information about detected drives."""
+        return {}

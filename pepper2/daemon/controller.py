@@ -6,8 +6,8 @@ from typing import List
 from gi.repository import GLib
 
 from pepper2 import __version__
+from pepper2.drives import DriveGroup
 from pepper2.status import DaemonStatus
-from pepper2.usbinfo import USBInfo
 
 LOGGER = logging.getLogger(__name__)
 
@@ -38,7 +38,7 @@ class Controller:  # noqa: D400 D205 D208
         self.data_lock = Lock()
 
         with self.data_lock:
-            self.usb_infos: List[USBInfo] = []
+            self.drive_group: DriveGroup = {}
 
     @property
     def status(self) -> DaemonStatus:
@@ -66,9 +66,4 @@ class Controller:  # noqa: D400 D205 D208
 
     def get_drive_statuses(self) -> List[str]:
         """Get the drive statuses."""
-        statuses = []
-        with self.data_lock:
-            current_data = self.usb_infos
-        for d in current_data:
-            statuses.append(f"{d.mount_path}: Unknown")
-        return statuses
+        return ["Not Implemented"]
