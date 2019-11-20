@@ -6,8 +6,9 @@ from pydbus import SystemBus
 from systemd.daemon import notify
 
 from pepper2 import __version__
+from pepper2.status import DaemonStatus
 
-from .controller import Controller, ControllerStatus
+from .controller import Controller
 from .udisks_controller import UDisksController
 
 LOGGER = logging.getLogger(__name__)
@@ -43,7 +44,7 @@ class PepperDaemon:
             self.udisks_controller.disk_signal,
         )
 
-        self.controller.status = ControllerStatus.READY
+        self.controller.status = DaemonStatus.READY
         notify("READY=1")
         LOGGER.info(f"Ready.")
 
@@ -62,7 +63,7 @@ class PepperDaemon:
 
     def stop(self) -> None:
         """Stop the daemon."""
-        self.controller.status = ControllerStatus.STOPPING
+        self.controller.status = DaemonStatus.STOPPING
         notify("STOPPING=1")
         LOGGER.info("Stopping.")
         self.disk_signal_handler.disconnect()

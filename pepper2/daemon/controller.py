@@ -7,18 +7,11 @@ from typing import List
 from gi.repository import GLib
 
 from pepper2 import __version__
+from pepper2.status import DaemonStatus
 
 from .usbinfo import USBInfo
 
 LOGGER = logging.getLogger(__name__)
-
-
-class ControllerStatus(str, Enum):
-    """Status Enum."""
-
-    STARTING = "starting"
-    READY = "ready"
-    STOPPING = "stopping"
 
 
 class Controller:  # noqa: D400 D205 D208
@@ -42,7 +35,7 @@ class Controller:  # noqa: D400 D205 D208
     """
 
     def __init__(self, loop: GLib.MainLoop):
-        self.status = ControllerStatus.STARTING
+        self.status = DaemonStatus.STARTING
         self.loop = loop
         self.data_lock = Lock()
 
