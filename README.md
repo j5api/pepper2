@@ -27,8 +27,8 @@ There are two programs in this repo, with shared code between them.
     - Triggers run and stop events for USBs, based on a set of conditions.
     
 In order to run `pepperd`, we need to tell D-Bus that we have permission to create a service on the System Bus.
-This can be done by placing a config file in `/etc/dbus-1/pepper2-bus.conf`.
-An example config file is included in this repository: [pepper2-bus.conf](pepper2-bus.conf).
+This can be done by placing a config file in `/etc/dbus-1/uk.org.j5.pepper2.conf`.
+An example config file is included in this repository: [uk.org.j5.pepper2.conf](uk.org.j5.pepper2.conf).
 
 ## Future Development
 
