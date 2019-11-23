@@ -18,7 +18,7 @@ python = "^3.6"
 click = "^7.0"
 systemd-python = "^234.0"
 pydbus = "^0.6.0"
-pygobject = "^3.34"
+pygobject = "^3.32"
 
 [tool.poetry.dev-dependencies]
 flake8 = "^3.7"
