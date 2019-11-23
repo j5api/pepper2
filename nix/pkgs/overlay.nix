@@ -2,6 +2,6 @@
 
 self: super: {
   pepper2 = self.callPackage ./pepper2.nix {
-    inherit (self.python3Packages) buildPythonApplication click pydbus pygobject3 python systemd;
+    inherit (self.python3Packages) buildPythonApplication click pydbus pygobject3 pytestCheckHook python systemd;
   };
 }
