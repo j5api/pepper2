@@ -40,7 +40,8 @@ class Controller:
 
     # DBus Methods
 
-    def get_version(self) -> str:
+    @property
+    def version(self) -> str:
         """Get the version of pepper2."""
         LOGGER.debug("Version number request over bus.")
         return __version__

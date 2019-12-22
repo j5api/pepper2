@@ -42,7 +42,7 @@ class Pepper2:
     def daemon_version(self) -> str:
         """Get the daemon version."""
         try:
-            return self._controller.get_version()
+            return self._controller.version
         except GLib.Error as e:
             raise Pepper2Exception("Error fetching version from daemon.") from e
 
