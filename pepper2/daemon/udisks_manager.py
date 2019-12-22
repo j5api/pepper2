@@ -112,15 +112,15 @@ class UDisksManager:
                                 self._register_drive(block["IdUUID"], mount_point, DriveType.NO_ACTION)
 
     def _register_drive(self, uuid: str, mount_path: Path, drive_type: DriveType):
-        """Register a drive."""
+        """Register a drive with the controller."""
         if mount_path.exists():
             drive = Drive(
                 uuid=uuid,
                 mount_path=mount_path,
                 drive_type=drive_type,
             )
-            LOGGER.info(f"Drive {drive.uuid} mounted ({drive_type.name}): {drive.mount_path}")
             with self.controller.data_lock:
+                LOGGER.info(f"Drive {drive.uuid} mounted ({drive_type.name}): {drive.mount_path}")
                 self.controller.drive_group[drive.uuid] = drive
         else:
             LOGGER.warning(f"Unreadable drive mounted: {mount_path}")
