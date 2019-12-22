@@ -24,9 +24,15 @@ bus = SystemBus()
 def main(*, verbose: bool) -> None:
     """Pepper2 Daemon."""
     if verbose:
-        logging.basicConfig(level=logging.DEBUG)
+        logging.basicConfig(
+            level=logging.DEBUG,
+        )
     else:
-        logging.basicConfig(level=logging.INFO)
+        logging.basicConfig(
+            level=logging.INFO,
+            format="%(asctime)s %(levelname)s %(message)s",
+            datefmt="%Y-%m-%d %H:%M:%S",
+        )
 
     pepperd = PepperDaemon()
 
