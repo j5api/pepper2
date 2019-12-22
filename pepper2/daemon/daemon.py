@@ -10,7 +10,7 @@ from pepper2 import __version__
 from pepper2.status import DaemonStatus
 
 from .controller import Controller
-from .udisks_controller import UDisksController
+from .udisks_manager import UDisksManager
 
 LOGGER = logging.getLogger(__name__)
 
@@ -43,7 +43,7 @@ class PepperDaemon:
         LOGGER.info(f"Starting v{__version__}.")
 
         self.controller = Controller(loop)
-        self.udisks_controller = UDisksController(bus, self.controller)
+        self.udisks_controller = UDisksManager(bus, self.controller)
 
         self._start()
         self.disk_signal_handler = bus.get(".UDisks2").InterfacesAdded.connect(

@@ -17,7 +17,7 @@ from .controller import Controller
 LOGGER = logging.getLogger(__name__)
 
 
-class UDisksController:
+class UDisksManager:
     """Talk to UDisks2 over D-Bus."""
 
     def __init__(self, bus: Bus, controller: Controller):
@@ -63,7 +63,7 @@ class UDisksController:
                 # We are only interested in the first mountpoint.
                 mount_point = mount_points[0]
 
-                mount_path = UDisksController.bytes_to_path(mount_point)
+                mount_path = UDisksManager.bytes_to_path(mount_point)
 
                 if mount_path.exists():
                     drive = Drive(
@@ -115,7 +115,7 @@ class UDisksController:
                 if 'MountPoints' in filesystem.keys():
                     mountpoints = filesystem['MountPoints']
                     if len(mountpoints) > 0:
-                        mount_point = UDisksController.bytes_to_path(
+                        mount_point = UDisksManager.bytes_to_path(
                             mountpoints[0],
                         )
                         if mount_point.exists():
