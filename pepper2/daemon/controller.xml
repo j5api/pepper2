@@ -1,0 +1,19 @@
+<!-- Controller DBus Configuration -->
+<!-- This XML is read by pydbus. -->
+<node>
+    <interface name='uk.org.j5.pepper2.Controller'>
+        <method name='get_version'>
+            <arg type='s' name='version' direction='out'/>
+        </method>
+        <method name='get_status'>
+            <arg type='s' name='status' direction='out'/>
+        </method>
+        <method name='get_drive_list'>
+            <arg type='as' name='drives' direction='out'/>
+        </method>
+        <method name='get_drive'>
+            <arg type='s' name='uuid' direction='in' />
+            <arg type='(bssi)' name='drive' direction='out' />
+        </method>
+    </interface>
+</node>
