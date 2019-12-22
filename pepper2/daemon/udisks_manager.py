@@ -38,21 +38,22 @@ class UDisksManager:
     def disk_signal(self, path: str, data: Dict[str, Dict[str, str]]) -> None:
         """Handle a disk signal event from UDisks2."""
         LOGGER.debug(f"Received event from {path}")
-        if "/org/freedesktop/UDisks2/jobs/" in path:
+
+        if path.startswith("/org/freedesktop/UDisks2/jobs/"):
             for job in data.keys():
                 event_data = data[job]
                 if "Operation" in event_data.keys():
                     if event_data["Operation"] == "filesystem-mount":
                         LOGGER.debug(f"Mount Event detected at {path}")
                         sleep(0.3)
-                        self.handle_mount_event(event_data)
+                        self._handle_mount_event(event_data)
 
                     if event_data["Operation"] == "cleanup":
                         LOGGER.debug(f"Removal Event detected at {path}")
                         sleep(0.3)
-                        self.handle_cleanup_event(event_data)
+                        self._handle_cleanup_event(event_data)
 
-    def handle_mount_event(self, event_data: Dict[str, str]) -> None:
+    def _handle_mount_event(self, event_data: Dict[str, str]) -> None:
         """Handle a mount event."""
         if 'Objects' in event_data.keys() \
                 and len(event_data["Objects"]) > 0:
@@ -62,22 +63,9 @@ class UDisksManager:
             if len(mount_points) != 0:
                 # We are only interested in the first mountpoint.
                 mount_point = mount_points[0]
-
                 mount_path = UDisksManager.bytes_to_path(mount_point)
 
-                if mount_path.exists():
-                    drive = Drive(
-                        uuid=block_device.IdUUID,
-                        mount_path=mount_path,
-                        drive_type=DriveType.NO_ACTION,  # Ignore everything for now.
-                    )
-                    LOGGER.info(f"Drive {drive.uuid} mounted: {drive.mount_path}")
-                    with self.controller.data_lock:
-                        self.controller.drive_group[drive.uuid] = drive
-                else:
-                    LOGGER.warning(
-                        f"Unreadable drive mounted: {mount_path}",
-                    )
+                self._register_drive(block_device.IdUUID, mount_path, DriveType.NO_ACTION)
             else:
                 LOGGER.warning(
                     f"No mountpoints available for {disk_bus_path}",
@@ -85,7 +73,7 @@ class UDisksManager:
         else:
             LOGGER.warning("No information on drive available. Aborting.")
 
-    def handle_cleanup_event(self, _: Dict[str, str]) -> None:
+    def _handle_cleanup_event(self, _: Dict[str, str]) -> None:
         """Handle a cleanup event."""
         with self.controller.data_lock:
             # We have no information to tell which drive left.
@@ -118,21 +106,21 @@ class UDisksManager:
                         mount_point = UDisksManager.bytes_to_path(
                             mountpoints[0],
                         )
-                        if mount_point.exists():
+                        if 'org.freedesktop.UDisks2.Block' in data.keys():
+                            block = data['org.freedesktop.UDisks2.Block']
+                            if 'IdUUID' in block.keys():
+                                self._register_drive(block["IdUUID"], mount_point, DriveType.NO_ACTION)
 
-                            if 'org.freedesktop.UDisks2.Block' in data.keys():
-                                block = data['org.freedesktop.UDisks2.Block']
-
-                                if 'IdUUID' in block.keys():
-
-                                    drive = Drive(
-                                        uuid=block["IdUUID"],
-                                        mount_path=mount_point,
-                                        drive_type=DriveType.NO_ACTION,
-                                        # Ignore everything for now.
-                                    )
-                                    LOGGER.info(
-                                        f"Drive {drive.uuid} mounted: {drive.mount_path}",
-                                    )
-                                    with self.controller.data_lock:
-                                        self.controller.drive_group[drive.uuid] = drive
+    def _register_drive(self, uuid: str, mount_path: Path, drive_type: DriveType):
+        """Register a drive."""
+        if mount_path.exists():
+            drive = Drive(
+                uuid=uuid,
+                mount_path=mount_path,
+                drive_type=drive_type,
+            )
+            LOGGER.info(f"Drive {drive.uuid} mounted ({drive_type.name}): {drive.mount_path}")
+            with self.controller.data_lock:
+                self.controller.drive_group[drive.uuid] = drive
+        else:
+            LOGGER.warning(f"Unreadable drive mounted: {mount_path}")
