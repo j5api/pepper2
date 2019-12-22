@@ -60,7 +60,7 @@ class UDisksManager:
             disk_bus_path = event_data["Objects"][0]
             block_device = self.bus.get(".UDisks2", disk_bus_path)
             mount_points = block_device.MountPoints
-            if len(mount_points) != 0:
+            if len(mount_points) > 0:
                 # We are only interested in the first mountpoint.
                 mount_point = mount_points[0]
                 mount_path = UDisksManager.bytes_to_path(mount_point)
@@ -81,7 +81,7 @@ class UDisksManager:
             removed_drives = []
             for drive in self.controller.drive_group.values():
                 if not drive.mount_path.exists():
-                    LOGGER.info(f"Drive removed: {drive.uuid }({drive.mount_path})")
+                    LOGGER.info(f"Drive {drive.uuid} removed ({drive.drive_type.name}): {drive.mount_path}")
                     removed_drives.append(drive.uuid)
             for uuid in removed_drives:
                 self.controller.drive_group.pop(uuid)
