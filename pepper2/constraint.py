@@ -30,6 +30,17 @@ class FilePresentConstraint(Constraint):
         ])
 
 
+class NumberOfFilesConstraint(Constraint):
+    """Ensure that n files are present."""
+
+    def __init__(self, n: int):
+        self.n = n
+
+    def matches(self, path: Path) -> bool:
+        """Check that the path contains n files."""
+        return self.n == len(list(path.iterdir()))
+
+
 class OrConstraint(Constraint):
     """Ensure that either of the constraints match."""
 
@@ -58,3 +69,14 @@ class AndConstraint(Constraint):
             self.a.matches(path),
             self.b.matches(path),
         ])
+
+
+class NotConstraint(Constraint):
+    """Ensure that the constraint does not match."""
+
+    def __init__(self, a: Constraint):
+        self.a = a
+
+    def matches(self, path: Path) -> bool:
+        """Check that the constraint does not match."""
+        return not self.a.matches(path)
