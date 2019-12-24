@@ -82,8 +82,8 @@ class UDisksManager:
             for drive in self.controller.drive_group.values():
                 if not drive.mount_path.exists():
                     LOGGER.info(
-                        f"Drive {drive.uuid} removed ",
-                        f"({drive.drive_type.name}): {drive.mount_path}",
+                        f"Drive {drive.uuid} removed "
+                        f"({drive.drive_type.name}): {drive.mount_path}"
                     )
                     removed_drives.append(drive.uuid)
             for uuid in removed_drives:
@@ -133,8 +133,8 @@ class UDisksManager:
             )
             with self.controller.data_lock:
                 LOGGER.info(
-                    f"Drive {drive.uuid} mounted ",
-                    f"({drive_type.name}): {drive.mount_path}",
+                    f"Drive {drive.uuid} mounted "
+                    f"({drive_type.name}): {drive.mount_path}"
                 )
                 self.controller.drive_group[drive.uuid] = drive
         else:
