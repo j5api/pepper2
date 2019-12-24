@@ -1,20 +1,11 @@
 """Classes to interact with drives."""
 
-from enum import IntEnum
 from pathlib import Path
-from typing import Dict
+from typing import Dict, Type
+
+from .drive_types import DriveType
 
 DriveGroup = Dict[str, 'Drive']
-
-
-class DriveType(IntEnum):
-    """The Drive Type."""
-
-    ERROR = -1
-    NO_ACTION = 0
-    USERCODE = 1
-    METADATA = 2
-    SYSTEM_UPDATE = 3
 
 
 class Drive:
@@ -25,7 +16,7 @@ class Drive:
             *,
             uuid: str,
             mount_path: Path,
-            drive_type: DriveType,
+            drive_type: Type[DriveType],
     ):
         self.uuid = uuid
         self.mount_path = mount_path

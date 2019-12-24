@@ -6,10 +6,12 @@ Abstract and talk to UDisks.
 import logging
 from pathlib import Path
 from time import sleep
-from typing import Dict, List
+from typing import Dict, List, Type
 
 from pydbus.bus import Bus
 
+from pepper2.constraint import Constraint
+from pepper2.drive_types import DRIVE_TYPES
 from pepper2.drives import Drive, DriveType
 
 from .controller import Controller
@@ -65,7 +67,7 @@ class UDisksManager:
                 mount_point = mount_points[0]
                 mount_path = UDisksManager.bytes_to_path(mount_point)
 
-                self._register_drive(block_device.IdUUID, mount_path, DriveType.NO_ACTION)
+                self._register_drive(block_device.IdUUID, mount_path)
             else:
                 LOGGER.warning(
                     f"No mountpoints available for {disk_bus_path}",
@@ -81,7 +83,10 @@ class UDisksManager:
             removed_drives = []
             for drive in self.controller.drive_group.values():
                 if not drive.mount_path.exists():
-                    LOGGER.info(f"Drive {drive.uuid} removed ({drive.drive_type.name}): {drive.mount_path}")
+                    LOGGER.info(
+                        f"Drive {drive.uuid} removed "
+                        f"({drive.drive_type.name}): {drive.mount_path}",
+                    )
                     removed_drives.append(drive.uuid)
             for uuid in removed_drives:
                 self.controller.drive_group.pop(uuid)
@@ -109,18 +114,37 @@ class UDisksManager:
                         if 'org.freedesktop.UDisks2.Block' in data.keys():
                             block = data['org.freedesktop.UDisks2.Block']
                             if 'IdUUID' in block.keys():
-                                self._register_drive(block["IdUUID"], mount_point, DriveType.NO_ACTION)
+                                self._register_drive(
+                                    block["IdUUID"],
+                                    mount_point,
+                                )
 
-    def _register_drive(self, uuid: str, mount_path: Path, drive_type: DriveType):
+    def _register_drive(
+            self,
+            uuid: str,
+            mount_path: Path,
+    ) -> None:
         """Register a drive with the controller."""
         if mount_path.exists():
             drive = Drive(
                 uuid=uuid,
                 mount_path=mount_path,
-                drive_type=drive_type,
+                drive_type=self._get_drive_type(mount_path),
             )
             with self.controller.data_lock:
-                LOGGER.info(f"Drive {drive.uuid} mounted ({drive_type.name}): {drive.mount_path}")
+                LOGGER.info(
+                    f"Drive {drive.uuid} mounted "
+                    f"({drive.drive_type.name}): {drive.mount_path}",
+                )
                 self.controller.drive_group[drive.uuid] = drive
         else:
             LOGGER.warning(f"Unreadable drive mounted: {mount_path}")
+
+    @staticmethod
+    def _get_drive_type(mount_path: Path) -> Type[DriveType]:
+        """Given a path, determine the drive type."""
+        for candidate in DRIVE_TYPES:
+            constraint: Constraint = candidate.constraint_matcher()
+            if constraint.matches(mount_path):
+                return candidate
+        raise RuntimeError("Unable to match drive.")

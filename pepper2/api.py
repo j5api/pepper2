@@ -6,9 +6,10 @@ from typing import TYPE_CHECKING
 from gi.repository import GLib
 from pydbus import SystemBus
 
-from .drives import Drive, DriveGroup, DriveType
+from .daemon_status import DaemonStatus
+from .drive_types import DRIVE_TYPES
+from .drives import Drive, DriveGroup
 from .error import Pepper2Exception
-from .status import DaemonStatus
 
 if TYPE_CHECKING:
     from pepper2.daemon.controller import Controller
@@ -90,8 +91,8 @@ class Pepper2:
             raise ValueError(f"No such drive {uuid}")
 
         try:
-            drive_type = DriveType(raw_data[3])
-        except ValueError as e:
+            drive_type = DRIVE_TYPES[raw_data[3]]
+        except IndexError as e:
             raise Pepper2Exception("Unknown drive type code.") from e
 
         return Drive(

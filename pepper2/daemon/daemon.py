@@ -7,7 +7,7 @@ from pydbus import SystemBus
 from systemd.daemon import notify
 
 from pepper2 import __version__
-from pepper2.status import DaemonStatus
+from pepper2.daemon_status import DaemonStatus
 
 from .controller import Controller
 from .udisks_manager import UDisksManager
