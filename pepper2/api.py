@@ -6,7 +6,8 @@ from typing import TYPE_CHECKING
 from gi.repository import GLib
 from pydbus import SystemBus
 
-from .drives import DRIVE_TYPES, Drive, DriveGroup
+from .drive_types import DRIVE_TYPES
+from .drives import Drive, DriveGroup
 from .error import Pepper2Exception
 from .status import DaemonStatus
 
