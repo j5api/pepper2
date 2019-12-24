@@ -1,5 +1,11 @@
 # pepper2
 
+[![CircleCI](https://circleci.com/gh/trickeydan/pepper2.svg?style=svg)](https://circleci.com/gh/trickeydan/pepper2)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/c99dfbefd260764d8875/test_coverage)](https://codeclimate.com/github/trickeydan/pepper2/test_coverage)
+[![Maintainability](https://api.codeclimate.com/v1/badges/c99dfbefd260764d8875/maintainability)](https://codeclimate.com/github/trickeydan/pepper2/maintainability)
+[![MIT license](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat)](https://opensource.org/licenses/MIT)
+![Bees](https://img.shields.io/badge/bees-110%25-yellow.svg)
+
 Robot Management Daemon
 
 ## Dependencies
