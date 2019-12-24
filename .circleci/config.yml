@@ -23,6 +23,9 @@ jobs:
               git fetch origin $parent_branch
               git merge --squash origin/$parent_branch
             fi
+      - run:
+          name: Install System Dependencies
+          command: apt update && apt install -y libgirepository1.0-dev libsystemd-dev
       - restore_cache:
           keys:
             - pip-packages-{{ .Branch }}-{{ checksum "poetry.lock" }}

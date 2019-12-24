@@ -16,6 +16,9 @@ type:
 test:
 	$(CMD) pytest --cov=$(PYMODULE) $(TESTS)
 
+test-ci:
+	$(CMD) pytest --cov=$(PYMODULE) $(TESTS) --cov-report xml
+
 test-cov:
 	$(CMD) pytest --cov=$(PYMODULE) $(TESTS) --cov-report html
 
