@@ -80,3 +80,11 @@ class NotConstraint(Constraint):
     def matches(self, path: Path) -> bool:
         """Check that the constraint does not match."""
         return not self.a.matches(path)
+
+
+class TrueConstraint(Constraint):
+    """A constraint that is always true."""
+
+    def matches(self, _: Path) -> bool:
+        """Always return true."""
+        return True

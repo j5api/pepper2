@@ -7,7 +7,7 @@ from gi.repository import GLib
 from pkg_resources import resource_string
 
 from pepper2 import __version__
-from pepper2.drives import DriveGroup
+from pepper2.drives import DRIVE_TYPES, DriveGroup
 from pepper2.status import DaemonStatus
 
 LOGGER = logging.getLogger(__name__)
@@ -69,7 +69,7 @@ class Controller:
             return True,\
                 drive.uuid,\
                 str(drive.mount_path.absolute()),\
-                drive.drive_type.value
+                DRIVE_TYPES.index(drive.drive_type)
         else:
             LOGGER.debug(f"No such drive \"{uuid}\"")
             return False, "", "", -1

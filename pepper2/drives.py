@@ -1,20 +1,51 @@
 """Classes to interact with drives."""
 
-from enum import IntEnum
+from abc import ABCMeta, abstractmethod
 from pathlib import Path
-from typing import Dict
+from typing import Dict, List, Type
+
+from .constraint import Constraint, FilePresentConstraint, TrueConstraint
 
 DriveGroup = Dict[str, 'Drive']
 
 
-class DriveType(IntEnum):
+class DriveType(metaclass=ABCMeta):
     """The Drive Type."""
 
-    ERROR = -1
-    NO_ACTION = 0
-    USERCODE = 1
-    METADATA = 2
-    SYSTEM_UPDATE = 3
+    name: str = "Unknown Drive"
+
+    @property
+    @abstractmethod
+    def constraint_matcher(self) -> Constraint:
+        """Get the constraints for a drive to match this type."""
+        raise NotImplementedError
+
+    # NO_ACTION = 0
+    # USERCODE = 1
+    # METADATA = 2
+    # SYSTEM_UPDATE = 3
+
+
+class UserCodeDriveType(DriveType):
+    """A drive with usercode."""
+
+    name: str = "USERCODE"
+
+    @property
+    def constraint_matcher(self) -> Constraint:
+        """Get the constraints for a drive to match this type."""
+        return FilePresentConstraint("main.py")
+
+
+class NoActionDriveType(DriveType):
+    """A drive for which we take no action."""
+
+    name: str = "NO_ACTION"
+
+    @property
+    def constraint_matcher(self) -> Constraint:
+        """Get the constraints for a drive to match this type."""
+        return TrueConstraint()
 
 
 class Drive:
@@ -25,8 +56,16 @@ class Drive:
             *,
             uuid: str,
             mount_path: Path,
-            drive_type: DriveType,
+            drive_type: Type[DriveType],
     ):
         self.uuid = uuid
         self.mount_path = mount_path
         self.drive_type = drive_type
+
+
+# List of drive types, in priority order.
+# The first one that matches will be selected.
+DRIVE_TYPES: List[Type[DriveType]] = [
+    UserCodeDriveType,
+    NoActionDriveType,
+]
