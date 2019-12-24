@@ -14,9 +14,9 @@ class DriveType(metaclass=ABCMeta):
 
     name: str = "Unknown Drive"
 
-    @property
+    @classmethod
     @abstractmethod
-    def constraint_matcher(self) -> Constraint:
+    def constraint_matcher(cls) -> Constraint:
         """Get the constraints for a drive to match this type."""
         raise NotImplementedError
 
@@ -31,8 +31,8 @@ class UserCodeDriveType(DriveType):
 
     name: str = "USERCODE"
 
-    @property
-    def constraint_matcher(self) -> Constraint:
+    @classmethod
+    def constraint_matcher(cls) -> Constraint:
         """Get the constraints for a drive to match this type."""
         return FilePresentConstraint("main.py")
 
@@ -42,8 +42,8 @@ class NoActionDriveType(DriveType):
 
     name: str = "NO_ACTION"
 
-    @property
-    def constraint_matcher(self) -> Constraint:
+    @classmethod
+    def constraint_matcher(cls) -> Constraint:
         """Get the constraints for a drive to match this type."""
         return TrueConstraint()
 
