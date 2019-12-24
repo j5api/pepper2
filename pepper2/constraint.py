@@ -13,7 +13,7 @@ class Constraint(metaclass=ABCMeta):
     @abstractmethod
     def matches(self, path: Path) -> bool:
         """Return true if path matches the constraint."""
-        raise NotImplementedError
+        raise NotImplementedError  # pragma: nocover
 
 
 class FilePresentConstraint(Constraint):
@@ -25,6 +25,7 @@ class FilePresentConstraint(Constraint):
     def matches(self, path: Path) -> bool:
         """Check if the path contains the file."""
         return all([
+            path.exists(),
             path.is_dir(),
             path.joinpath(self.filename).exists(),
         ])
@@ -38,7 +39,13 @@ class NumberOfFilesConstraint(Constraint):
 
     def matches(self, path: Path) -> bool:
         """Check that the path contains n files."""
-        return self.n == len(list(path.iterdir()))
+        if all([
+            path.exists(),
+            path.is_dir(),
+        ]):
+            return self.n == len(list(path.iterdir()))
+        else:
+            return False
 
 
 class OrConstraint(Constraint):
