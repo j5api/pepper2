@@ -23,10 +23,18 @@ class NoActionDriveType(DriveType):
 
     @classmethod
     def mount_action(cls, drive: 'Drive', daemon_controller: 'Controller') -> None:
-        """Perform the mount action."""
-        raise NotImplementedError
+        """
+        Perform the mount action.
+
+        In this case, do absolutely nothing.
+        """
+        pass
 
     @classmethod
     def unmount_action(cls, drive: 'Drive', daemon_controller: 'Controller') -> None:
-        """Perform the unmount/remove action."""
-        raise NotImplementedError
+        """
+        Perform the unmount action.
+
+        In this case, do absolutely nothing.
+        """
+        pass
