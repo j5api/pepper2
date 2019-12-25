@@ -66,11 +66,11 @@ class Controller:
         LOGGER.debug(f"Drive info request for \"{uuid}\" over bus.")
         if uuid in self.drive_group.keys():
             drive = self.drive_group[uuid]
-            LOGGER.debug(f"Found drive \"{drive.uuid}\" at {drive.mount_path}")
+            LOGGER.debug(f"Response: \"{drive.uuid}\" at {drive.mount_path}")
             return True,\
                 drive.uuid,\
                 str(drive.mount_path.absolute()),\
                 DRIVE_TYPES.index(drive.drive_type)
         else:
-            LOGGER.debug(f"No such drive \"{uuid}\"")
+            LOGGER.debug(f"Response:  No such drive \"{uuid}\"")
             return False, "", "", -1
