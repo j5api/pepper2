@@ -93,6 +93,7 @@ class UDisksManager:
 
         # Call unmount hooks for removed drives
         for drive in removed_drives:
+            LOGGER.debug(f"Calling unmount action for Drive {drive.uuid}")
             drive.drive_type.unmount_action(drive, self.controller)
 
     def detect_initial_drives(self) -> None:
@@ -147,8 +148,10 @@ class UDisksManager:
 
             # Call the appropriate hook
             if startup:
+                LOGGER.debug(f"Calling start action for Drive {drive.uuid}")
                 drive.drive_type.start_action(drive, self.controller)
             else:
+                LOGGER.debug(f"Calling mount action for Drive {drive.uuid}")
                 drive.drive_type.mount_action(drive, self.controller)
         else:
             LOGGER.warning(f"Unreadable drive mounted: {mount_path}")
