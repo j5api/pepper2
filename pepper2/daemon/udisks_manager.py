@@ -87,9 +87,13 @@ class UDisksManager:
                         f"Drive {drive.uuid} removed "
                         f"({drive.drive_type.name}): {drive.mount_path}",
                     )
-                    removed_drives.append(drive.uuid)
-            for uuid in removed_drives:
-                self.controller.drive_group.pop(uuid)
+                    removed_drives.append(drive)
+            for drive in removed_drives:
+                self.controller.drive_group.pop(drive.uuid)
+
+        # Call unmount hooks for removed drives
+        for drive in removed_drives:
+            drive.drive_type.unmount_action(drive, self.controller)
 
     def detect_initial_drives(self) -> None:
         """Detect and register drives as startup."""
@@ -117,12 +121,15 @@ class UDisksManager:
                                 self._register_drive(
                                     block["IdUUID"],
                                     mount_point,
+                                    startup=True,
                                 )
 
     def _register_drive(
             self,
             uuid: str,
             mount_path: Path,
+            *,
+            startup: bool = False,  # Was the drive inserted before we started
     ) -> None:
         """Register a drive with the controller."""
         if mount_path.exists():
@@ -137,6 +144,12 @@ class UDisksManager:
                     f"({drive.drive_type.name}): {drive.mount_path}",
                 )
                 self.controller.drive_group[drive.uuid] = drive
+
+            # Call the appropriate hook
+            if startup:
+                drive.drive_type.start_action(drive, self.controller)
+            else:
+                drive.drive_type.mount_action(drive, self.controller)
         else:
             LOGGER.warning(f"Unreadable drive mounted: {mount_path}")
 
