@@ -2,6 +2,8 @@
 
 from abc import ABCMeta, abstractmethod
 
+from pepper2.drives import Drive
+
 
 class UserCodeDriver(metaclass=ABCMeta):
     """
@@ -14,6 +16,8 @@ class UserCodeDriver(metaclass=ABCMeta):
     uniform interface. This allows us to execute usercode in a
     variety of formats and environments, depending on the kit.
     """
+
+    drive: Drive
 
     @abstractmethod
     def start_execution(self) -> None:
