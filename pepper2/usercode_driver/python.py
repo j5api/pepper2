@@ -67,13 +67,17 @@ class PythonDriver(UserCodeDriver):
         This is called when the child process of this process dies.
         """
         self._reset_sigchld()
-        return_code = self._process.poll()
 
-        if return_code == 0:
-            LOGGER.info("Usercode finished successfully.")
-        else:
-            LOGGER.info(f"Usercode finished unsuccessfully (return code: {return_code}).")
-        self._process = None
+        if self._process is not None:
+            return_code = self._process.poll()
+
+            if return_code == 0:
+                LOGGER.info("Usercode finished successfully.")
+            else:
+                LOGGER.info(
+                    f"Usercode finished unsuccessfully (return code: {return_code}).",
+                )
+            self._process = None
 
     def _reset_sigchld(self) -> None:
         """Reset the SIGCHLD handler to the original."""
