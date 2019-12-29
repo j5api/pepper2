@@ -10,7 +10,7 @@ from pepper2 import __version__
 from pepper2.daemon_status import DaemonStatus
 from pepper2.drive_types import DRIVE_TYPES
 from pepper2.drives import DriveGroup
-from pepper2.usercode_driver import UserCodeDriver, CodeStatus
+from pepper2.usercode_driver import CodeStatus, UserCodeDriver
 
 LOGGER = logging.getLogger(__name__)
 

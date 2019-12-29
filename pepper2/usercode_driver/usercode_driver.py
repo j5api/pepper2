@@ -5,8 +5,10 @@ from enum import Enum
 
 from pepper2.drives import Drive
 
+
 class CodeStatus(Enum):
     """Status of the running code."""
+
     RUNNING = 0
     FINISHED = 1
     CRASHED = 2

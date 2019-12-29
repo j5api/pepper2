@@ -12,7 +12,7 @@ from systemd import journal
 
 from pepper2.drives import Drive
 
-from .usercode_driver import UserCodeDriver, CodeStatus
+from .usercode_driver import CodeStatus, UserCodeDriver
 
 if TYPE_CHECKING:
     # _HANDLER is only available in typeshed.
@@ -180,7 +180,6 @@ class UnixProcessDriver(UserCodeDriver):
 
         if self._logger is not None:
             self._logger.stop()
-
 
     @abstractmethod
     def get_command(self) -> List[str]:
