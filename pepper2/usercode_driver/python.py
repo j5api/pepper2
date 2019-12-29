@@ -3,10 +3,11 @@
 import logging
 from signal import SIGCHLD, SIGKILL, SIGTERM, Signals, getsignal, signal
 from subprocess import DEVNULL, PIPE, STDOUT, Popen, TimeoutExpired
-from systemd import journal
 from threading import Thread
 from types import FrameType
 from typing import TYPE_CHECKING, Optional
+
+from systemd import journal
 
 from pepper2.drives import Drive
 
