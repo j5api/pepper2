@@ -36,6 +36,17 @@ In order to run `pepperd`, we need to tell D-Bus that we have permission to crea
 This can be done by placing a config file in `/etc/dbus-1/uk.org.j5.pepper2.conf`.
 An example config file is included in this repository: [uk.org.j5.pepper2.conf](uk.org.j5.pepper2.conf).
 
+## Usage
+
+`pepperd` should be run in the background as a daemon using systemd.
+
+USB drives should be automounted, and pepper2 will detect the new drive via Udisks.
+
+Usercode `main.py` on the drive will begin execution, `stdout` and `stderr` will be logged to `log.txt`.
+
+- View status: `pepperctl status`
+- View live log of usercode: `journalctl -ft pepper2-usercode`
+
 ## Future Development
 
 ![pepper2 Entity Diagram](assets/pepper2.svg)
