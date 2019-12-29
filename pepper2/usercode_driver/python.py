@@ -3,8 +3,8 @@
 import logging
 from signal import SIGCHLD, SIGKILL, SIGTERM, Signals, getsignal, signal
 from subprocess import DEVNULL, PIPE, STDOUT, Popen, TimeoutExpired
+from systemd import journal
 from threading import Thread
-from time import sleep
 from types import FrameType
 from typing import TYPE_CHECKING, Optional
 
@@ -45,19 +45,19 @@ class LoggerThread(Thread):
     def run(self) -> None:
         """Log the process."""
         LOGGER.info("Logger Thread Started.")
-        self._log_line_to_file("=== LOG STARTED ===\n")
+        self._log("=== LOG STARTED ===\n")
         while self.log:
             try:
                 output = self._process.stdout.readline()
                 if output == '' and self._process.poll() is not None:
                     break
-                self._log_line_to_file(output.decode('utf-8'))
+                self._log(output.decode('utf-8'))
             except ValueError as e:
                 LOGGER.debug(
                     f"Exception handled when reading line from process: {e}",
                 )
                 self.stop()
-        self._log_line_to_file("=== LOG FINISHED ===\n")
+        self._log("=== LOG FINISHED ===\n")
         self._log_file.close()
         LOGGER.info("Logger Thread Exiting.")
 
@@ -65,10 +65,24 @@ class LoggerThread(Thread):
         """Stop logging."""
         self.log = False
 
+    def _log(self, line: str) -> None:
+        """Log to all locations."""
+        if line != "":
+            self._log_line_to_file(line)
+            self._log_line_to_systemd(line)
+
     def _log_line_to_file(self, line: str) -> None:
         """Log a line to the logfile."""
         self._log_file.write(line)
         self._log_file.flush()
+
+    def _log_line_to_systemd(
+            self,
+            line: str,
+            identifier: str = "pepper2-usercode",
+    ) -> None:
+        """Log a line to the systemd journal."""
+        journal.send(line, SYSLOG_IDENTIFIER=identifier, SYSLOG_PID=100)
 
 
 class PythonDriver(UserCodeDriver):
