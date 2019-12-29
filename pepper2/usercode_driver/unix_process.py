@@ -81,7 +81,7 @@ class LoggerThread(Thread):
             identifier: str = "pepper2-usercode",
     ) -> None:
         """Log a line to the systemd journal."""
-        journal.send(line, SYSLOG_IDENTIFIER=identifier, SYSLOG_PID=100)
+        journal.send(line, SYSLOG_IDENTIFIER=identifier)
 
 
 class UnixProcessDriver(UserCodeDriver):
