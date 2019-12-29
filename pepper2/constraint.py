@@ -30,6 +30,9 @@ class FilePresentConstraint(Constraint):
             path.joinpath(self.filename).exists(),
         ])
 
+    def __repr__(self) -> str:
+        return f"FilePresentConstraint(filename={self.filename})"
+
 
 class NumberOfFilesConstraint(Constraint):
     """Ensure that n files are present."""
@@ -47,6 +50,9 @@ class NumberOfFilesConstraint(Constraint):
         else:
             return False
 
+    def __repr__(self) -> str:
+        return f"NumberOfFilesConstraint(n={self.n})"
+
 
 class OrConstraint(Constraint):
     """Ensure that either of the constraints match."""
@@ -61,6 +67,9 @@ class OrConstraint(Constraint):
             self.a.matches(path),
             self.b.matches(path),
         ])
+
+    def __repr__(self) -> str:
+        return f"OrConstraint(a={self.a}, b={self.b})"
 
 
 class AndConstraint(Constraint):
@@ -77,6 +86,9 @@ class AndConstraint(Constraint):
             self.b.matches(path),
         ])
 
+    def __repr__(self) -> str:
+        return f"AndConstraint(a={self.a}, b={self.b})"
+
 
 class NotConstraint(Constraint):
     """Ensure that the constraint does not match."""
@@ -87,6 +99,9 @@ class NotConstraint(Constraint):
     def matches(self, path: Path) -> bool:
         """Check that the constraint does not match."""
         return not self.a.matches(path)
+
+    def __repr__(self) -> str:
+        return f"NotConstraint(a={self.a})"
 
 
 class TrueConstraint(Constraint):
