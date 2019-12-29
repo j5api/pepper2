@@ -19,6 +19,9 @@ class UserCodeDriver(metaclass=ABCMeta):
 
     drive: Drive
 
+    def __init__(self, drive: Drive):
+        self.drive = drive
+
     @abstractmethod
     def start_execution(self) -> None:
         """Start the execution of the code."""

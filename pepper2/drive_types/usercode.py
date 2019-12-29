@@ -1,10 +1,15 @@
 """Usercode Drive Type."""
 
 import logging
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Mapping, Type
 
-from pepper2.constraint import Constraint, FilePresentConstraint
-from pepper2.usercode_driver.python import PythonUnixProcessDriver
+from pepper2.constraint import (
+    Constraint,
+    FalseConstraint,
+    FilePresentConstraint,
+    OrConstraint,
+)
+from pepper2.usercode_driver import PythonUnixProcessDriver, UserCodeDriver
 
 from .drive_type import DriveType
 
@@ -13,6 +18,10 @@ if TYPE_CHECKING:
     from pepper2.drives import Drive
 
 LOGGER = logging.getLogger(__name__)
+
+DRIVERS: Mapping[str, Type[UserCodeDriver]] = {
+    "main.py": PythonUnixProcessDriver,
+}
 
 
 class UserCodeDriveType(DriveType):
@@ -23,17 +32,31 @@ class UserCodeDriveType(DriveType):
     @classmethod
     def constraint_matcher(cls) -> Constraint:
         """Get the constraints for a drive to match this type."""
-        return FilePresentConstraint("main.py")
+        constraint: Constraint = FalseConstraint()
+
+        for filename in DRIVERS.keys():
+            constraint = OrConstraint(constraint, FilePresentConstraint(filename))
+
+        return constraint
 
     @classmethod
     def mount_action(cls, drive: 'Drive', daemon_controller: 'Controller') -> None:
         """Perform the mount action."""
         with daemon_controller.data_lock:
             if daemon_controller.usercode_driver is None:
-                # TODO: Dynamically choose Usercode Driver
-                LOGGER.info("Starting usercode process.")
-                daemon_controller.usercode_driver = PythonUnixProcessDriver(drive)
-                daemon_controller.usercode_driver.start_execution()
+                for filename in DRIVERS.keys():
+                    if drive.mount_path.joinpath(filename).exists():
+                        driver = DRIVERS[filename]
+                        LOGGER.info(
+                            f"Starting usercode process with {driver.__name__}.",
+                        )
+                        daemon_controller.usercode_driver = driver(drive)
+                        daemon_controller.usercode_driver.start_execution()
+                        return None
+                LOGGER.error(
+                    "Unable to start Usercode: Unable to find "
+                    "driver for filename.",
+                )
             else:
                 LOGGER.info(
                     "Unable to start Usercode: A usercode process "
