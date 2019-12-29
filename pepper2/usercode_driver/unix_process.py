@@ -30,9 +30,6 @@ class LoggerThread(Thread):
     logs the output of the child process to the appropriate
     destinations. This is used as a more flexible, pure-python
     alternative to solutions such as ``script``.
-
-    TODO: Ensure that this is .join when the program exits.
-    TODO: Make this NOT a daemon thread, it apparently causes trouble.
     """
 
     def __init__(self, process: Popen, drive: Drive):
