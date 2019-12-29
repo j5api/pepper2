@@ -8,4 +8,6 @@ class DaemonStatus(str, Enum):
 
     STARTING = "starting"
     READY = "ready"
-    STOPPING = "stopping"
+    CODE_RUNNING = "code_running"
+    CODE_FINISHED = "code_stopped"
+    CODE_CRASHED = "code_crashed"

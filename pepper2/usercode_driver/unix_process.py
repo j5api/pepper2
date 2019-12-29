@@ -12,7 +12,7 @@ from systemd import journal
 
 from pepper2.drives import Drive
 
-from .usercode_driver import UserCodeDriver
+from .usercode_driver import UserCodeDriver, CodeStatus
 
 if TYPE_CHECKING:
     # _HANDLER is only available in typeshed.
@@ -93,12 +93,14 @@ class UnixProcessDriver(UserCodeDriver):
 
     _process: Optional[Popen]
     _logger: Optional[LoggerThread]
+    _return_code: Optional[int]
 
     def __init__(self, drive: Drive):
         self.drive = drive
 
         self._process = None
         self._logger = None
+        self._return_code = None
 
         self._original_sigchld: _HANDLER = getsignal(SIGCHLD)
 
@@ -135,6 +137,19 @@ class UnixProcessDriver(UserCodeDriver):
         else:
             LOGGER.info("No usercode process to stop.")
 
+    @property
+    def status(self) -> CodeStatus:
+        """The status of the executing code."""
+        if self._process is not None:
+            return CodeStatus.RUNNING
+        elif self._return_code is not None:
+            if self._return_code == 0:
+                return CodeStatus.FINISHED
+            else:
+                return CodeStatus.CRASHED
+        else:
+            raise RuntimeError("Unknown Code State.")
+
     def sigchld_handler(self, _: Signals, __: FrameType) -> None:
         """
         Handler for SIGCHLD.
@@ -152,6 +167,7 @@ class UnixProcessDriver(UserCodeDriver):
                 LOGGER.info(
                     f"Usercode finished unsuccessfully (return code: {return_code}).",
                 )
+            self._return_code = return_code
             self._cleanup()
 
     def _reset_sigchld(self) -> None:
@@ -164,6 +180,7 @@ class UnixProcessDriver(UserCodeDriver):
 
         if self._logger is not None:
             self._logger.stop()
+
 
     @abstractmethod
     def get_command(self) -> List[str]:

@@ -10,7 +10,7 @@ from pepper2 import __version__
 from pepper2.daemon_status import DaemonStatus
 from pepper2.drive_types import DRIVE_TYPES
 from pepper2.drives import DriveGroup
-from pepper2.usercode_driver import UserCodeDriver
+from pepper2.usercode_driver import UserCodeDriver, CodeStatus
 
 LOGGER = logging.getLogger(__name__)
 
@@ -21,8 +21,8 @@ class Controller:
     dbus = resource_string(__name__, "controller.xml").decode('utf-8')
 
     def __init__(self, loop: GLib.MainLoop):
-        self._status = DaemonStatus.STARTING
         self.loop = loop
+        self.ready = False
         self.data_lock = Lock()
 
         with self.data_lock:
@@ -33,14 +33,21 @@ class Controller:
     def status(self) -> DaemonStatus:
         """Current status of the daemon."""
         with self.data_lock:
-            return self._status
-
-    @status.setter
-    def status(self, status: DaemonStatus) -> None:
-        """Current status of the daemon."""
-        with self.data_lock:
-            self._status = status
-
+            if self.usercode_driver is None:
+                if self.ready:
+                    return DaemonStatus.READY
+                else:
+                    return DaemonStatus.STARTING
+            else:
+                code_status = self.usercode_driver.status
+                if code_status is CodeStatus.RUNNING:
+                    return DaemonStatus.CODE_RUNNING
+                elif code_status is CodeStatus.CRASHED:
+                    return DaemonStatus.CODE_CRASHED
+                elif code_status is CodeStatus.FINISHED:
+                    return DaemonStatus.CODE_FINISHED
+                else:
+                    raise RuntimeError("Unknown Code State")
     # DBus Methods
 
     @property

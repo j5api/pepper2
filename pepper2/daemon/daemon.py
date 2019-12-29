@@ -58,7 +58,7 @@ class PepperDaemon:
 
         self.udisks_controller.detect_initial_drives()
 
-        self.controller.status = DaemonStatus.READY
+        self.controller.ready = True
         notify("READY=1")
         LOGGER.info(f"Ready.")
 
@@ -77,7 +77,7 @@ class PepperDaemon:
 
     def stop(self) -> None:
         """Stop the daemon."""
-        self.controller.status = DaemonStatus.STOPPING
+        self.controller.ready = False
         notify("STOPPING=1")
         LOGGER.info("Stopping.")
         self.disk_signal_handler.disconnect()
