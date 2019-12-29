@@ -2,7 +2,7 @@
 
 import logging
 from signal import SIGCHLD, SIGKILL, SIGTERM, Signals, getsignal, signal
-from subprocess import DEVNULL, Popen, TimeoutExpired
+from subprocess import DEVNULL, PIPE, STDOUT, Popen, TimeoutExpired
 from threading import Thread
 from time import sleep
 from types import FrameType
@@ -28,6 +28,9 @@ class LoggerThread(Thread):
     logs the output of the child process to the appropriate
     destinations. This is used as a more flexible, pure-python
     alternative to solutions such as ``script``.
+
+    TODO: Ensure that this is .join when the program exits.
+    TODO: Make this NOT a daemon thread, it apparently causes trouble.
     """
 
     def __init__(self, process: Popen, drive: Drive):
@@ -42,11 +45,19 @@ class LoggerThread(Thread):
     def run(self) -> None:
         """Log the process."""
         LOGGER.info("Logger Thread Started.")
-        self._log_line_to_file("=== LOG STARTED ===")
+        self._log_line_to_file("=== LOG STARTED ===\n")
         while self.log:
-            print("logging")
-            sleep(0.5)
-        self._log_line_to_file("=== LOG FINISHED ===")
+            try:
+                output = self._process.stdout.readline()
+                if output == '' and self._process.poll() is not None:
+                    break
+                self._log_line_to_file(output.decode('utf-8'))
+            except ValueError as e:
+                LOGGER.debug(
+                    f"Exception handled when reading line from process: {e}",
+                )
+                self.stop()
+        self._log_line_to_file("=== LOG FINISHED ===\n")
         self._log_file.close()
         LOGGER.info("Logger Thread Exiting.")
 
@@ -56,7 +67,7 @@ class LoggerThread(Thread):
 
     def _log_line_to_file(self, line: str) -> None:
         """Log a line to the logfile."""
-        self._log_file.write(f"{line}\n")
+        self._log_file.write(line)
         self._log_file.flush()
 
 
@@ -82,8 +93,10 @@ class PythonDriver(UserCodeDriver):
         """Start the execution of the code."""
         signal(SIGCHLD, self.sigchld_handler)
         self._process = Popen(
-            ["python3", "main.py"],
+            ["python3", "-u", "main.py"],
             stdin=DEVNULL,
+            stdout=PIPE,
+            stderr=STDOUT,
             cwd=self.drive.mount_path,
             start_new_session=True,  # Put the process in a new process group
         )
