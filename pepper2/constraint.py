@@ -110,3 +110,17 @@ class TrueConstraint(Constraint):
     def matches(self, _: Path) -> bool:
         """Always return true."""
         return True
+
+    def __repr__(self) -> str:
+        return "TrueConstraint()"
+
+
+class FalseConstraint(Constraint):
+    """A constraint that is always false."""
+
+    def matches(self, _: Path) -> bool:
+        """Always return false."""
+        return False
+
+    def __repr__(self) -> str:
+        return "FalseConstraint()"

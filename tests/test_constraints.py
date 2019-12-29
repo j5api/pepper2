@@ -5,6 +5,7 @@ from pathlib import Path
 from pepper2.constraint import (
     AndConstraint,
     Constraint,
+    FalseConstraint,
     FilePresentConstraint,
     NotConstraint,
     NumberOfFilesConstraint,
@@ -71,6 +72,19 @@ def test_true_constraint() -> None:
     assert constraint.matches(FILE_PRESENT_PATH)
     assert constraint.matches(OTHER_PRESENT_PATH)
     assert constraint.matches(THREE_PRESENT_PATH)
+
+
+def test_false_constraint() -> None:
+    """Test that the FalseConstraint works as expected."""
+    constraint = FalseConstraint()
+
+    assert not constraint.matches(DATA_PATH)
+    assert not constraint.matches(EMPTY_PATH)
+    assert not constraint.matches(NOT_EXIST_PATH)
+    assert not constraint.matches(FILE_PATH)
+    assert not constraint.matches(FILE_PRESENT_PATH)
+    assert not constraint.matches(OTHER_PRESENT_PATH)
+    assert not constraint.matches(THREE_PRESENT_PATH)
 
 
 def test_not_constraint() -> None:
