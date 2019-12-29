@@ -4,7 +4,7 @@ import logging
 from typing import TYPE_CHECKING
 
 from pepper2.constraint import Constraint, FilePresentConstraint
-from pepper2.usercode_driver.python import PythonDriver
+from pepper2.usercode_driver.python import PythonUnixProcessDriver
 
 from .drive_type import DriveType
 
@@ -32,7 +32,7 @@ class UserCodeDriveType(DriveType):
             if daemon_controller.usercode_driver is None:
                 # TODO: Dynamically choose Usercode Driver
                 LOGGER.info("Starting usercode process.")
-                daemon_controller.usercode_driver = PythonDriver(drive)
+                daemon_controller.usercode_driver = PythonUnixProcessDriver(drive)
                 daemon_controller.usercode_driver.start_execution()
             else:
                 LOGGER.info(

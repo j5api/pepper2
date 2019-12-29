@@ -86,11 +86,11 @@ class LoggerThread(Thread):
         journal.send(line, SYSLOG_IDENTIFIER=identifier, SYSLOG_PID=100)
 
 
-class PythonDriver(UserCodeDriver):
+class PythonUnixProcessDriver(UserCodeDriver):
     """
     Usercode driver to execute Python.
 
-    TODO: Name this class something better.
+    Executes as the current user in a separate unix process group.
     """
 
     _process: Optional[Popen]
