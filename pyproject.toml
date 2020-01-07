@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pepper2"
-version = "0.1.0"
+version = "0.1.0a1"
 description = "Robot Management Daemon"
 authors = ["Dan Trickey <dan@trickey.io>"]
 license = "MIT"
