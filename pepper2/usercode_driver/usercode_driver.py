@@ -10,18 +10,14 @@ if TYPE_CHECKING:
     from pepper2.daemon.controller import Controller
 
 
-class CodeStatus(Enum):
-    """
-    Status of the running code.
+class CodeStatus(str, Enum):
+    """Status of the running code."""
 
-    TODO: Use a str enum to match DaemonStatus
-    """
-
-    IDLE = 0
-    RUNNING = 1
-    KILLED = 2
-    FINISHED = 3
-    CRASHED = 4
+    IDLE = "code_idle"
+    RUNNING = "code_running"
+    KILLED = "code_killed"
+    FINISHED = "code_finished"
+    CRASHED = "code_crashed"
 
 
 class UserCodeDriver(metaclass=ABCMeta):
