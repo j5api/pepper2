@@ -2,16 +2,22 @@
 
 from abc import ABCMeta, abstractmethod
 from enum import Enum
+from typing import TYPE_CHECKING
 
 from pepper2.drives import Drive
 
+if TYPE_CHECKING:
+    from pepper2.daemon.controller import Controller
 
-class CodeStatus(Enum):
+
+class CodeStatus(str, Enum):
     """Status of the running code."""
 
-    RUNNING = 0
-    FINISHED = 1
-    CRASHED = 2
+    IDLE = "code_idle"
+    RUNNING = "code_running"
+    KILLED = "code_killed"
+    FINISHED = "code_finished"
+    CRASHED = "code_crashed"
 
 
 class UserCodeDriver(metaclass=ABCMeta):
@@ -27,9 +33,12 @@ class UserCodeDriver(metaclass=ABCMeta):
     """
 
     drive: Drive
+    _status: CodeStatus
 
-    def __init__(self, drive: Drive):
+    def __init__(self, drive: Drive, daemon_controller: 'Controller'):
         self.drive = drive
+        self.daemon_controller = daemon_controller
+        self.status = CodeStatus.IDLE
 
     @abstractmethod
     def start_execution(self) -> None:
@@ -42,7 +51,12 @@ class UserCodeDriver(metaclass=ABCMeta):
         raise NotImplementedError  # pragma: nocover
 
     @property
-    @abstractmethod
     def status(self) -> CodeStatus:
-        """The status of the executing code."""
-        raise NotImplementedError  # pragma: nocover
+        """Get the status of the executing code."""
+        return self._status
+
+    @status.setter
+    def status(self, status: CodeStatus) -> None:
+        """Set the status of the executing code."""
+        self._status = status
+        self.daemon_controller.inform_code_status(status)

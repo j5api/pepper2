@@ -18,6 +18,8 @@ if TYPE_CHECKING:
     # _HANDLER is only available in typeshed.
     from signal import _HANDLER
 
+    from pepper2.daemon.controller import Controller
+
 
 LOGGER = logging.getLogger(__name__)
 
@@ -95,8 +97,8 @@ class UnixProcessDriver(UserCodeDriver):
     _logger: Optional[LoggerThread]
     _return_code: Optional[int]
 
-    def __init__(self, drive: Drive):
-        self.drive = drive
+    def __init__(self, drive: Drive, daemon_controller: 'Controller'):
+        super().__init__(drive, daemon_controller)
 
         self._process = None
         self._logger = None
@@ -117,6 +119,7 @@ class UnixProcessDriver(UserCodeDriver):
         )
         self._logger = LoggerThread(self._process, self.drive)
         self._logger.start()
+        self.status = CodeStatus.RUNNING
 
         LOGGER.info(f"Usercode process started with pid {self._process.pid}")
 
@@ -133,22 +136,10 @@ class UnixProcessDriver(UserCodeDriver):
                 pass
             LOGGER.info(f"Sent SIGKILL to pid {self._process.pid}")
             self._process.send_signal(SIGKILL)
+            self.status = CodeStatus.KILLED
             self._cleanup()
         else:
             LOGGER.info("No usercode process to stop.")
-
-    @property
-    def status(self) -> CodeStatus:
-        """The status of the executing code."""
-        if self._process is not None:
-            return CodeStatus.RUNNING
-        elif self._return_code is not None:
-            if self._return_code == 0:
-                return CodeStatus.FINISHED
-            else:
-                return CodeStatus.CRASHED
-        else:
-            raise RuntimeError("Unknown Code State.")
 
     def sigchld_handler(self, _: Signals, __: FrameType) -> None:
         """
@@ -162,8 +153,10 @@ class UnixProcessDriver(UserCodeDriver):
             return_code = self._process.poll()
 
             if return_code == 0:
+                self.status = CodeStatus.FINISHED
                 LOGGER.info("Usercode finished successfully.")
             else:
+                self.status = CodeStatus.CRASHED
                 LOGGER.info(
                     f"Usercode finished unsuccessfully (return code: {return_code}).",
                 )
