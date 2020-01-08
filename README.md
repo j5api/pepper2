@@ -12,11 +12,15 @@ Robot Management Daemon
 
 Some of the dependencies for pepper2 are not available on PyPI.
 
+- D-Bus
+  - Tested on 1.12.16+
 - [GLib](https://developer.gnome.org/glib/) 2.46+
 - [girepository](https://wiki.gnome.org/Projects/GObjectIntrospection) 1.46+
+- Python 3.6+
 - UDisks2
+  - Tested on 2.8.1+
 - udiskie or similar automounting daemon that uses udisks2.
-- D-Bus
+  - Tested on 1.7.7
 
 These packages can usually be found on systems with a desktop interface anyway.
 
