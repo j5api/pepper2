@@ -49,7 +49,7 @@ Usercode `main.py` on the drive will begin execution, `stdout` and `stderr` will
 
 ## Future Development
 
-![pepper2 Entity Diagram](assets/pepper2.svg)
+![pepper2 Entity Diagram](docs/pepper2.svg)
 
 The above diagram shows how a typical system using `pepper2` would work.
 
