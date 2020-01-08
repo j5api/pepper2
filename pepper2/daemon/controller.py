@@ -39,7 +39,11 @@ class Controller:
 
     @property
     def status(self) -> DaemonStatus:
-        """Get the current status of the daemon."""
+        """
+        Get the current status of the daemon.
+
+        TODO: Make sure this fires a signal
+        """
         with self.data_lock:
             return self._status
 
@@ -65,15 +69,6 @@ class Controller:
         """Get the version of pepper2."""
         LOGGER.debug("Version number request over bus.")
         return __version__
-
-    def get_status(self) -> str:
-        """
-        Get the status of pepper2.
-
-        TODO: Get rid of this funciton
-        """
-        LOGGER.debug("Status request over bus.")
-        return str(self.status.value)
 
     def get_drive_list(self) -> List[str]:
         """Get a list of drives."""
