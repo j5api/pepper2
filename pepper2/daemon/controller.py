@@ -1,7 +1,7 @@
 """Pepperd Controller Service."""
 import logging
 from threading import Lock
-from typing import List, Optional, Tuple
+from typing import List, Mapping, Optional, Tuple
 
 from gi.repository import GLib
 from pkg_resources import resource_string
@@ -13,6 +13,14 @@ from pepper2.drives import DriveGroup
 from pepper2.usercode_driver import CodeStatus, UserCodeDriver
 
 LOGGER = logging.getLogger(__name__)
+
+CODE_DAEMON_STATUS_MAPPING: Mapping[CodeStatus, DaemonStatus] = {
+    CodeStatus.IDLE: DaemonStatus.CODE_IDLE,
+    CodeStatus.RUNNING: DaemonStatus.CODE_RUNNING,
+    CodeStatus.KILLED: DaemonStatus.CODE_KILLED,
+    CodeStatus.FINISHED: DaemonStatus.CODE_FINISHED,
+    CodeStatus.CRASHED: DaemonStatus.CODE_CRASHED,
+}
 
 
 class Controller:
@@ -40,14 +48,13 @@ class Controller:
                     return DaemonStatus.STARTING
             else:
                 code_status = self.usercode_driver.status
-                if code_status is CodeStatus.RUNNING:
-                    return DaemonStatus.CODE_RUNNING
-                elif code_status is CodeStatus.CRASHED:
-                    return DaemonStatus.CODE_CRASHED
-                elif code_status is CodeStatus.FINISHED:
-                    return DaemonStatus.CODE_FINISHED
-                else:
-                    raise RuntimeError("Unknown Code State")
+                try:
+                    return CODE_DAEMON_STATUS_MAPPING[code_status]
+                except KeyError as e:
+                    raise RuntimeError(
+                        "Unknown UsercodeDriver status.",
+                    ) from e
+
     # DBus Methods
 
     @property
@@ -57,7 +64,11 @@ class Controller:
         return __version__
 
     def get_status(self) -> str:
-        """Get the status of pepper2."""
+        """
+        Get the status of pepper2.
+
+        TODO: Get rid of this funciton
+        """
         LOGGER.debug("Status request over bus.")
         return str(self.status.value)
 

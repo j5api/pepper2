@@ -7,7 +7,11 @@ from pepper2.drives import Drive
 
 
 class CodeStatus(Enum):
-    """Status of the running code."""
+    """
+    Status of the running code.
+
+    TODO: Use a str enum to match DaemonStatus
+    """
 
     IDLE = 0
     RUNNING = 1
