@@ -23,7 +23,7 @@ These can be installed using `apt install`.
 
 - `sudo pip3 install pepper2`
 - Install `uk.org.j5.pepper2.conf` into `/etc/dbus-1/system.d/`
-- `sudo systemctl reload dbus
+- `sudo systemctl reload dbus`
 
 ## Running Pepper2
 
