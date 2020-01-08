@@ -9,6 +9,7 @@ from pepper2.constraint import (
     FilePresentConstraint,
     OrConstraint,
 )
+from pepper2.daemon_status import DaemonStatus
 from pepper2.usercode_driver import PythonUnixProcessDriver, UserCodeDriver
 
 from .drive_type import DriveType
@@ -50,7 +51,10 @@ class UserCodeDriveType(DriveType):
                         LOGGER.info(
                             f"Starting usercode process with {driver.__name__}.",
                         )
-                        daemon_controller.usercode_driver = driver(drive)
+                        daemon_controller.usercode_driver = driver(
+                            drive,
+                            daemon_controller,
+                        )
                         daemon_controller.usercode_driver.start_execution()
                         return None
                 LOGGER.error(
@@ -72,6 +76,7 @@ class UserCodeDriveType(DriveType):
                     LOGGER.info("Stopping usercode process.")
                     daemon_controller.usercode_driver.stop_execution()
                     daemon_controller.usercode_driver = None
+                    daemon_controller.status = DaemonStatus.READY
                 else:
                     LOGGER.info(
                         "No action taken as usercode process is"

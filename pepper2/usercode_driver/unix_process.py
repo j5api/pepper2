@@ -18,6 +18,8 @@ if TYPE_CHECKING:
     # _HANDLER is only available in typeshed.
     from signal import _HANDLER
 
+    from pepper2.daemon.controller import Controller
+
 
 LOGGER = logging.getLogger(__name__)
 
@@ -95,8 +97,8 @@ class UnixProcessDriver(UserCodeDriver):
     _logger: Optional[LoggerThread]
     _return_code: Optional[int]
 
-    def __init__(self, drive: Drive):
-        self.drive = drive
+    def __init__(self, drive: Drive, daemon_controller: 'Controller'):
+        super().__init__(drive, daemon_controller)
 
         self._process = None
         self._logger = None

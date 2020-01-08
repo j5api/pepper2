@@ -2,8 +2,12 @@
 
 from abc import ABCMeta, abstractmethod
 from enum import Enum
+from typing import TYPE_CHECKING
 
 from pepper2.drives import Drive
+
+if TYPE_CHECKING:
+    from pepper2.daemon.controller import Controller
 
 
 class CodeStatus(Enum):
@@ -35,9 +39,10 @@ class UserCodeDriver(metaclass=ABCMeta):
     drive: Drive
     _status: CodeStatus
 
-    def __init__(self, drive: Drive):
+    def __init__(self, drive: Drive, daemon_controller: 'Controller'):
         self.drive = drive
-        self._status = CodeStatus.IDLE
+        self.daemon_controller = daemon_controller
+        self.status = CodeStatus.IDLE
 
     @abstractmethod
     def start_execution(self) -> None:
@@ -58,3 +63,4 @@ class UserCodeDriver(metaclass=ABCMeta):
     def status(self, status: CodeStatus) -> None:
         """Set the status of the executing code."""
         self._status = status
+        self.daemon_controller.inform_code_status(status)
