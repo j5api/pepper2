@@ -5,6 +5,7 @@ from typing import List, Mapping, Optional, Tuple
 
 from gi.repository import GLib
 from pkg_resources import resource_string
+from pydbus.generic import signal
 
 from pepper2 import __version__
 from pepper2.daemon_status import DaemonStatus
@@ -28,6 +29,8 @@ class Controller:
 
     dbus = resource_string(__name__, "controller.xml").decode('utf-8')
 
+    PropertiesChanged = signal()
+
     def __init__(self, loop: GLib.MainLoop):
         self.loop = loop
         self.data_lock = RLock()
@@ -39,11 +42,7 @@ class Controller:
 
     @property
     def status(self) -> DaemonStatus:
-        """
-        Get the current status of the daemon.
-
-        TODO: Make sure this fires a signal
-        """
+        """Get the current status of the daemon."""
         with self.data_lock:
             return self._status
 
@@ -52,6 +51,7 @@ class Controller:
         """Set the current status of the daemon."""
         with self.data_lock:
             self._status = status
+            self.PropertiesChanged("uk.org.j5.pepper2.Controller", {"status": status}, [])
 
     def inform_code_status(self, code_status: CodeStatus) -> None:
         """Inform daemon_controller of an updated code status."""
