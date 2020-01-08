@@ -9,9 +9,11 @@ from pepper2.drives import Drive
 class CodeStatus(Enum):
     """Status of the running code."""
 
-    RUNNING = 0
-    FINISHED = 1
-    CRASHED = 2
+    IDLE = 0
+    RUNNING = 1
+    KILLED = 2
+    FINISHED = 3
+    CRASHED = 4
 
 
 class UserCodeDriver(metaclass=ABCMeta):
@@ -27,9 +29,11 @@ class UserCodeDriver(metaclass=ABCMeta):
     """
 
     drive: Drive
+    _status: CodeStatus
 
     def __init__(self, drive: Drive):
         self.drive = drive
+        self._status = CodeStatus.IDLE
 
     @abstractmethod
     def start_execution(self) -> None:
@@ -42,7 +46,11 @@ class UserCodeDriver(metaclass=ABCMeta):
         raise NotImplementedError  # pragma: nocover
 
     @property
-    @abstractmethod
     def status(self) -> CodeStatus:
-        """The status of the executing code."""
-        raise NotImplementedError  # pragma: nocover
+        """Get the status of the executing code."""
+        return self._status
+
+    @status.setter
+    def status(self, status: CodeStatus) -> None:
+        """Set the status of the executing code."""
+        self._status = status

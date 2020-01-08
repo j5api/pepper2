@@ -117,6 +117,7 @@ class UnixProcessDriver(UserCodeDriver):
         )
         self._logger = LoggerThread(self._process, self.drive)
         self._logger.start()
+        self.status = CodeStatus.RUNNING
 
         LOGGER.info(f"Usercode process started with pid {self._process.pid}")
 
@@ -133,22 +134,10 @@ class UnixProcessDriver(UserCodeDriver):
                 pass
             LOGGER.info(f"Sent SIGKILL to pid {self._process.pid}")
             self._process.send_signal(SIGKILL)
+            self.status = CodeStatus.KILLED
             self._cleanup()
         else:
             LOGGER.info("No usercode process to stop.")
-
-    @property
-    def status(self) -> CodeStatus:
-        """The status of the executing code."""
-        if self._process is not None:
-            return CodeStatus.RUNNING
-        elif self._return_code is not None:
-            if self._return_code == 0:
-                return CodeStatus.FINISHED
-            else:
-                return CodeStatus.CRASHED
-        else:
-            raise RuntimeError("Unknown Code State.")
 
     def sigchld_handler(self, _: Signals, __: FrameType) -> None:
         """
@@ -162,8 +151,10 @@ class UnixProcessDriver(UserCodeDriver):
             return_code = self._process.poll()
 
             if return_code == 0:
+                self.status = CodeStatus.FINISHED
                 LOGGER.info("Usercode finished successfully.")
             else:
+                self.status = CodeStatus.CRASHED
                 LOGGER.info(
                     f"Usercode finished unsuccessfully (return code: {return_code}).",
                 )
