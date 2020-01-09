@@ -1,5 +1,6 @@
 """Pepperd App."""
 import logging
+from time import sleep
 
 import click
 from gi.repository import GLib
@@ -79,8 +80,15 @@ class PepperDaemon:
         """Stop the daemon."""
         notify("STOPPING=1")
         LOGGER.info("Stopping.")
+
         self.disk_signal_handler.disconnect()
+        sleep(0.3)  # Wait, just in case usercode has only just started.
+
+        if self.controller.usercode_driver is not None:
+            self.controller.usercode_driver.stop_execution()
+
         loop.quit()
+        LOGGER.info("Stopped.")
 
 
 if __name__ == "__main__":
