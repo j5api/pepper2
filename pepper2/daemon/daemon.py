@@ -49,14 +49,14 @@ class PepperDaemon:
         LOGGER.info(f"Starting v{__version__}.")
 
         self.controller = Controller(loop)
-        self.udisks_controller = UDisksManager(bus, self.controller)
+        self.udisks_manager = UDisksManager(bus, self.controller)
 
         self._start()
         self.disk_signal_handler = bus.get(".UDisks2").InterfacesAdded.connect(
-            self.udisks_controller.disk_signal,
+            self.udisks_manager.disk_signal,
         )
 
-        self.udisks_controller.detect_initial_drives()
+        self.udisks_manager.detect_initial_drives()
 
         self.controller.status = DaemonStatus.READY
         notify("READY=1")
