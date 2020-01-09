@@ -53,11 +53,10 @@ class LoggerThread(Thread):
                 if output == '' and self._process.poll() is not None:
                     break
                 self._log(output.decode('utf-8'))
-            except ValueError as e:
-                LOGGER.debug(
-                    f"Exception handled when reading line from process: {e}",
-                )
-                self.stop()
+            except ValueError:
+                # We have tried to read from stdout, when it is closed.
+                # See: https://hg.python.org/cpython/rev/7d722c9049ff
+                break
         self._log("=== LOG FINISHED ===\n")
         self._log_file.close()
         LOGGER.info("Logger Thread Exiting.")
