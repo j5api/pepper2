@@ -6,10 +6,10 @@ from typing import TYPE_CHECKING
 from gi.repository import GLib
 from pydbus import SystemBus
 
-from .daemon_status import DaemonStatus
-from .drive_types import DRIVE_TYPES
-from .drives import Drive, DriveGroup
-from .error import Pepper2Exception
+from pepper2.api.error import Pepper2Exception
+from pepper2.common.daemon_status import DaemonStatus
+from pepper2.common.drive_types import DRIVE_TYPES
+from pepper2.common.drives import Drive, DriveGroup
 
 if TYPE_CHECKING:
     from pepper2.daemon.controller import Controller

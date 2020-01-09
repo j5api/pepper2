@@ -3,20 +3,23 @@
 import logging
 from typing import TYPE_CHECKING, Mapping, Type
 
-from pepper2.constraint import (
+from pepper2.common.daemon_status import DaemonStatus
+from pepper2.daemon.constraint import (
     Constraint,
     FalseConstraint,
     FilePresentConstraint,
     OrConstraint,
 )
-from pepper2.daemon_status import DaemonStatus
-from pepper2.usercode_driver import PythonUnixProcessDriver, UserCodeDriver
+from pepper2.daemon.usercode_driver import (
+    PythonUnixProcessDriver,
+    UserCodeDriver,
+)
 
 from .drive_type import DriveType
 
 if TYPE_CHECKING:
     from pepper2.daemon.controller import Controller
-    from pepper2.drives import Drive
+    from pepper2.common.drives import Drive
 
 LOGGER = logging.getLogger(__name__)
 

@@ -2,11 +2,11 @@
 from abc import ABCMeta, abstractmethod
 from typing import TYPE_CHECKING
 
-from pepper2.constraint import Constraint
+from pepper2.daemon.constraint import Constraint
 
 if TYPE_CHECKING:
     from pepper2.daemon.controller import Controller
-    from pepper2.drives import Drive
+    from pepper2.common.drives import Drive
 
 
 class DriveType(metaclass=ABCMeta):

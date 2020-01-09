@@ -2,7 +2,7 @@
 
 import click
 
-from pepper2 import Pepper2, Pepper2Exception
+from pepper2.api import Pepper2, Pepper2Exception
 
 
 @click.command()

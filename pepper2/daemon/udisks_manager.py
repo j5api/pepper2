@@ -10,9 +10,9 @@ from typing import Dict, List, Type
 
 from pydbus.bus import Bus
 
-from pepper2.constraint import Constraint
-from pepper2.drive_types import DRIVE_TYPES
-from pepper2.drives import Drive, DriveType
+from pepper2.common.drive_types import DRIVE_TYPES
+from pepper2.common.drives import Drive, DriveType
+from pepper2.daemon.constraint import Constraint
 
 from .controller import Controller
 

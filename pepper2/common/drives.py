@@ -3,7 +3,7 @@
 from pathlib import Path
 from typing import Dict, Type
 
-from .drive_types import DriveType
+from pepper2.common.drive_types import DriveType
 
 DriveGroup = Dict[str, 'Drive']
 

@@ -2,7 +2,7 @@
 
 from pathlib import Path
 
-from pepper2.constraint import (
+from pepper2.daemon.constraint import (
     AndConstraint,
     Constraint,
     FalseConstraint,

@@ -4,7 +4,7 @@ from abc import ABCMeta, abstractmethod
 from enum import Enum
 from typing import TYPE_CHECKING
 
-from pepper2.drives import Drive
+from pepper2.common.drives import Drive
 
 if TYPE_CHECKING:
     from pepper2.daemon.controller import Controller

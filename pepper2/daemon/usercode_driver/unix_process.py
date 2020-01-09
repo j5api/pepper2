@@ -10,7 +10,7 @@ from typing import TYPE_CHECKING, List, Optional
 
 from systemd import journal
 
-from pepper2.drives import Drive
+from pepper2.common.drives import Drive
 
 from .usercode_driver import CodeStatus, UserCodeDriver
 
