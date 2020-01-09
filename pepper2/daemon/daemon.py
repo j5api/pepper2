@@ -1,6 +1,8 @@
 """Pepperd App."""
 import logging
+from signal import SIGHUP, SIGINT, SIGTERM, Signals, signal
 from time import sleep
+from types import FrameType
 
 import click
 from gi.repository import GLib
@@ -57,6 +59,11 @@ class PepperDaemon:
             self.udisks_manager.disk_signal,
         )
 
+        # Shutdown gracefully
+        signal(SIGHUP, self._signal_stop)
+        signal(SIGINT, self._signal_stop)
+        signal(SIGTERM, self._signal_stop)
+
         self.udisks_manager.detect_initial_drives()
 
         self.controller.status = DaemonStatus.READY
@@ -89,6 +96,10 @@ class PepperDaemon:
 
         loop.quit()
         LOGGER.info("Stopped.")
+
+    def _signal_stop(self, signal: Signals, __: FrameType) -> None:
+        LOGGER.debug(f"Received {Signals(signal).name}")
+        self.stop()
 
 
 if __name__ == "__main__":
