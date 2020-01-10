@@ -70,6 +70,7 @@ class Controller:
 
         :returns: the uuid of the executing drive.
         """
+        LOGGER.debug(f"Usercode drive uuid request over bus.")
         if self.usercode_driver is None:
             return ""
         else:
@@ -82,6 +83,7 @@ class Controller:
 
         :returns: the name of the driver
         """
+        LOGGER.debug(f"Usercode Driver request over bus.")
         if self.usercode_driver is None:
             return ""
         else:
