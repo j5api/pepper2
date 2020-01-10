@@ -69,16 +69,12 @@ class Pepper2:
 
         This method could definitely be made more efficient.
         """
-        drive_group = {}
-
         try:
             drive_list = self._controller.get_drive_list()
         except GLib.Error as e:
             raise Pepper2Exception("Error fetching drive list from daemon.") from e
 
-        for drive_uuid in drive_list:
-            drive_group[drive_uuid] = self.get_drive(drive_uuid)
-        return drive_group
+        return {drive_uuid: self.get_drive(drive_uuid) for drive_uuid in drive_list}
 
     def get_drive(self, uuid: str) -> Drive:
         """Get a drive by uuid."""
