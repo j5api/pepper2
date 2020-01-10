@@ -53,17 +53,6 @@ class Controller:
             self._status = status
             self.PropertiesChanged("uk.org.j5.pepper2.Controller", {"status": status}, [])
 
-    def inform_code_status(self, code_status: CodeStatus) -> None:
-        """Inform daemon_controller of an updated code status."""
-        try:
-            self.status = CODE_DAEMON_STATUS_MAPPING[code_status]
-        except KeyError as e:
-            raise RuntimeError(
-                "Unknown UsercodeDriver status.",
-            ) from e
-
-    # DBus Methods
-
     @property
     def version(self) -> str:
         """Get the version of pepper2."""
@@ -92,3 +81,14 @@ class Controller:
         else:
             LOGGER.debug(f"Response:  No such drive \"{uuid}\"")
             return False, "", "", -1
+
+    # Not exposed on interface.
+
+    def inform_code_status(self, code_status: CodeStatus) -> None:
+        """Inform daemon_controller of an updated code status."""
+        try:
+            self.status = CODE_DAEMON_STATUS_MAPPING[code_status]
+        except KeyError as e:
+            raise RuntimeError(
+                "Unknown UsercodeDriver status.",
+            ) from e
