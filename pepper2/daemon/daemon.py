@@ -54,7 +54,17 @@ class PepperDaemon:
         self.controller = Controller(loop)
         self.udisks_manager = UDisksManager(bus, self.controller)
 
-        self._start()
+        try:
+            # Publish our controller on the bus.
+            self.controller_object = bus.publish("uk.org.j5.pepper2", self.controller)
+        except RuntimeError as e:
+            if str(e) == "name already exists on the bus":
+                LOGGER.error("pepperd is already running.")
+                notify("STOPPING=1")
+                exit(1)
+            else:
+                raise
+
         self.disk_signal_handler = bus.get(".UDisks2").InterfacesAdded.connect(
             self.udisks_manager.disk_signal,
         )
@@ -69,28 +79,18 @@ class PepperDaemon:
         if self.controller.daemon_status is DaemonStatus.STARTING:
             # Only change the status if a usercode hasn't started.
             self.controller.daemon_status = DaemonStatus.READY
+
         notify("READY=1")
         LOGGER.info(f"Ready.")
-
-    def _start(self) -> None:
-        """Start the daemon."""
-        try:
-            # Publish our controller on the bus.
-            bus.publish("uk.org.j5.pepper2", self.controller)
-        except RuntimeError as e:
-            if str(e) == "name already exists on the bus":
-                LOGGER.error("pepperd is already running.")
-                notify("STOPPING=1")
-                exit(1)
-            else:
-                raise
 
     def stop(self) -> None:
         """Stop the daemon."""
         notify("STOPPING=1")
         LOGGER.info("Stopping.")
 
+        # Disconnect from D-Bus
         self.disk_signal_handler.disconnect()
+        self.controller_object.unpublish
         sleep(0.3)  # Wait, just in case usercode has only just started.
 
         if self.controller.usercode_driver is not None:

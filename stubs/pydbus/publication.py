@@ -15,3 +15,7 @@ class Publication:
             allow_replacement: bool = True,
             replace: bool = False,
     ) -> None: ...
+
+    def unpublish(self) -> None:
+        """Actually a method made by ExitableWithAliases."""
+        ...
