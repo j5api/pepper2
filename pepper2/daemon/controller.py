@@ -59,6 +59,18 @@ class Controller:
         LOGGER.debug("Version number request over bus.")
         return __version__
 
+    @property
+    def usercode_drive(self) -> str:
+        """
+        Get the drive of the executing usercode.
+
+        :returns: the uuid of the executing drive.
+        """
+        if self.usercode_driver is None:
+            return ""
+        else:
+            return self.usercode_driver.drive.uuid
+
     def get_drive_list(self) -> List[str]:
         """Get a list of drives."""
         LOGGER.debug("Drive list request over bus.")

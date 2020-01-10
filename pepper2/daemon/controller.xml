@@ -2,10 +2,11 @@
 <!-- This XML is read by pydbus. -->
 <node>
     <interface name='uk.org.j5.pepper2.Controller'>
-        <property name="version" type="s" access="read"></property>
         <property name="status" type="s" access="read">
           <annotation name="org.freedesktop.DBus.Property.EmitsChangedSignal" value="true"/>
         </property>
+        <property name="version" type="s" access="read"></property>
+        <property name="usercode_drive" type="s" access="read"></property>
         <method name='get_drive_list'>
             <arg type='as' name='drives' direction='out'/>
         </method>
