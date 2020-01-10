@@ -2,6 +2,7 @@
 
 import click
 
+from .kill import kill
 from .usercode_status import usercode_status
 
 
@@ -11,4 +12,5 @@ def usercode() -> None:
     pass
 
 
+usercode.add_command(kill)
 usercode.add_command(usercode_status)
