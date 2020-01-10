@@ -71,6 +71,18 @@ class Controller:
         else:
             return self.usercode_driver.drive.uuid
 
+    @property
+    def usercode_driver_name(self) -> str:
+        """
+        Get the usercode_driver of the executing usercode.
+
+        :returns: the name of the driver
+        """
+        if self.usercode_driver is None:
+            return ""
+        else:
+            return self.usercode_driver.__class__.__name__
+
     def get_drive_list(self) -> List[str]:
         """Get a list of drives."""
         LOGGER.debug("Drive list request over bus.")

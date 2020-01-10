@@ -7,6 +7,7 @@
         </property>
         <property name="version" type="s" access="read"></property>
         <property name="usercode_drive" type="s" access="read"></property>
+        <property name="usercode_driver_name" type="s" access="read"></property>
         <method name='get_drive_list'>
             <arg type='as' name='drives' direction='out'/>
         </method>
