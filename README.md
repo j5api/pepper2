@@ -24,6 +24,8 @@ Some of the dependencies for pepper2 are not available on PyPI.
 
 These packages can usually be found on systems with a desktop interface anyway.
 
+[Instructions for setting up a Debian 10 system](docs/DEBIAN.md) are included in this repo.
+
 ## Running
 
 There are two programs in this repo, with shared code between them.
@@ -48,7 +50,10 @@ USB drives should be automounted, and pepper2 will detect the new drive via Udis
 
 Usercode `main.py` on the drive will begin execution, `stdout` and `stderr` will be logged to `log.txt`.
 
-- View status: `pepperctl status`
+- View daemon status: `pepperctl status`
+- View usercode status: `pepperctl usercode status`
+- Kill usercode: `pepperctl usercode kill`
+- Start usercode on already inserted drive: `pepperctl usercode start`
 - View live log of usercode: `journalctl -ft pepper2-usercode`
 
 ## Future Development
@@ -81,7 +86,9 @@ Core Components are essential to use `pepper2`. They are all included in this re
     - For example, wait for start.
 - `pepper2-leds`
     - Listens to signal events from `pepper2-daemon` and manipulates GPIO pins according to a config.
-    
+- `pepper2-servohack`
+    - Listens to signal events from `pepper2-daemon` and resets the USB bus. Workaround for [bug in SR SBv4](https://github.com/srobo/servo-v4-fw/issues/7)
+
 ## Development Resources
 
 This program makes heavy use of D-Bus, which is not the simplest thing in the world to understand.
