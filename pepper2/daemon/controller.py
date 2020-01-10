@@ -112,6 +112,21 @@ class Controller:
             LOGGER.debug(f"Response:  No such drive \"{uuid}\"")
             return False, "", "", -1
 
+    def kill_usercode(self) -> bool:
+        """
+        Kill any running usercode.
+
+        :returns: Boolean of success.
+        """
+        LOGGER.debug(f"Usercode kill request over bus.")
+        if self.usercode_driver is None or \
+           self.usercode_driver.status is not CodeStatus.RUNNING:
+            return False
+        else:
+            LOGGER.info("Killing Usercode.")
+            self.usercode_driver.stop_execution()
+            return True
+
     # Not exposed on interface.
 
     def inform_code_status(self, code_status: CodeStatus) -> None:
