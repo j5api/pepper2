@@ -16,7 +16,7 @@ from pepper2.daemon.usercode_driver import CodeStatus, UserCodeDriver
 LOGGER = logging.getLogger(__name__)
 
 CODE_DAEMON_STATUS_MAPPING: Mapping[CodeStatus, DaemonStatus] = {
-    CodeStatus.IDLE: DaemonStatus.CODE_IDLE,
+    CodeStatus.STARTING: DaemonStatus.CODE_STARTING,
     CodeStatus.RUNNING: DaemonStatus.CODE_RUNNING,
     CodeStatus.KILLED: DaemonStatus.CODE_KILLED,
     CodeStatus.FINISHED: DaemonStatus.CODE_FINISHED,

@@ -13,7 +13,7 @@ if TYPE_CHECKING:
 class CodeStatus(str, Enum):
     """Status of the running code."""
 
-    IDLE = "code_idle"
+    STARTING = "code_starting"
     RUNNING = "code_running"
     KILLED = "code_killed"
     FINISHED = "code_finished"
@@ -38,7 +38,7 @@ class UserCodeDriver(metaclass=ABCMeta):
     def __init__(self, drive: Drive, daemon_controller: 'Controller'):
         self.drive = drive
         self.daemon_controller = daemon_controller
-        self.status = CodeStatus.IDLE
+        self.status = CodeStatus.STARTING
 
     @abstractmethod
     def start_execution(self) -> None:

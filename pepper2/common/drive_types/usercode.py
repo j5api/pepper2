@@ -73,7 +73,7 @@ class UserCodeDriveType(DriveType):
 
                 # Change drive type so that this usercode does not get executed.
                 LOGGER.debug(
-                    f"Changing drive type of {drive.uuid} to NoActionDriveType"
+                    f"Changing drive type of {drive.uuid} to NoActionDriveType",
                 )
                 drive.drive_type = NoActionDriveType
 

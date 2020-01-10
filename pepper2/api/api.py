@@ -114,7 +114,7 @@ class Pepper2:
 
     def start_usercode(self) -> None:
         """Start any dead usercode."""
-        if self.daemon_status in [DaemonStatus.CODE_RUNNING, DaemonStatus.CODE_IDLE]:
+        if self.daemon_status in [DaemonStatus.CODE_RUNNING, DaemonStatus.CODE_STARTING]:
             raise ValueError("Usercode is already running.")
 
         if self.daemon_status in [DaemonStatus.READY, DaemonStatus.STARTING]:
