@@ -79,7 +79,7 @@ class UserCodeDriveType(DriveType):
                     LOGGER.info("Stopping usercode process.")
                     daemon_controller.usercode_driver.stop_execution()
                     daemon_controller.usercode_driver = None
-                    daemon_controller.status = DaemonStatus.READY
+                    daemon_controller.daemon_status = DaemonStatus.READY
                 else:
                     LOGGER.info(
                         "No action taken as usercode process is"

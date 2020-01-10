@@ -51,7 +51,7 @@ class Pepper2:
     def daemon_status(self) -> DaemonStatus:
         """Get the daemon status."""
         try:
-            status_string = self._controller.status
+            status_string = self._controller.daemon_status
         except GLib.Error as e:
             raise Pepper2Exception("Error fetching status from daemon.") from e
 

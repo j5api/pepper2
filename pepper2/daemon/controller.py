@@ -36,22 +36,26 @@ class Controller:
         self.data_lock = RLock()
 
         with self.data_lock:
-            self._status: DaemonStatus = DaemonStatus.STARTING
+            self._daemon_status: DaemonStatus = DaemonStatus.STARTING
             self.drive_group: DriveGroup = {}
             self.usercode_driver: Optional[UserCodeDriver] = None
 
     @property
-    def status(self) -> DaemonStatus:
-        """Get the current status of the daemon."""
+    def daemon_status(self) -> DaemonStatus:
+        """Get the current daemon_status of the daemon."""
         with self.data_lock:
-            return self._status
+            return self._daemon_status
 
-    @status.setter
-    def status(self, status: DaemonStatus) -> None:
-        """Set the current status of the daemon."""
+    @daemon_status.setter
+    def daemon_status(self, daemon_status: DaemonStatus) -> None:
+        """Set the current daemon_status of the daemon."""
         with self.data_lock:
-            self._status = status
-            self.PropertiesChanged("uk.org.j5.pepper2.Controller", {"status": status}, [])
+            self._daemon_status = daemon_status
+            self.PropertiesChanged(
+                "uk.org.j5.pepper2.Controller",
+                {"daemon_status": daemon_status},
+                [],
+            )
 
     @property
     def version(self) -> str:
@@ -111,7 +115,7 @@ class Controller:
     def inform_code_status(self, code_status: CodeStatus) -> None:
         """Inform daemon_controller of an updated code status."""
         try:
-            self.status = CODE_DAEMON_STATUS_MAPPING[code_status]
+            self.daemon_status = CODE_DAEMON_STATUS_MAPPING[code_status]
         except KeyError as e:
             raise RuntimeError(
                 "Unknown UsercodeDriver status.",
