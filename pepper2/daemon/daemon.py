@@ -66,7 +66,9 @@ class PepperDaemon:
 
         self.udisks_manager.detect_initial_drives()
 
-        self.controller.daemon_status = DaemonStatus.READY
+        if self.controller.daemon_status is DaemonStatus.STARTING:
+            # Only change the status if a usercode hasn't started.
+            self.controller.daemon_status = DaemonStatus.READY
         notify("READY=1")
         LOGGER.info(f"Ready.")
 
