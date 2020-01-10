@@ -18,5 +18,8 @@
         <method name='kill_usercode'>
             <arg type='b' name='success' direction='out' />
         </method>
+        <method name='start_usercode'>
+            <arg type='b' name='success' direction='out' />
+        </method>
     </interface>
 </node>

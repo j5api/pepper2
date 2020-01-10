@@ -107,20 +107,23 @@ class UnixProcessDriver(UserCodeDriver):
 
     def start_execution(self) -> None:
         """Start the execution of the code."""
-        signal(SIGCHLD, self.sigchld_handler)
-        self._process = Popen(
-            self.get_command(),
-            stdin=DEVNULL,
-            stdout=PIPE,
-            stderr=STDOUT,
-            cwd=self.drive.mount_path,
-            start_new_session=True,  # Put the process in a new process group
-        )
-        self._logger = LoggerThread(self._process, self.drive)
-        self._logger.start()
-        self.status = CodeStatus.RUNNING
+        if self._process is None:
+            signal(SIGCHLD, self.sigchld_handler)
+            self._process = Popen(
+                self.get_command(),
+                stdin=DEVNULL,
+                stdout=PIPE,
+                stderr=STDOUT,
+                cwd=self.drive.mount_path,
+                start_new_session=True,  # Put the process in a new process group
+            )
+            self._logger = LoggerThread(self._process, self.drive)
+            self._logger.start()
+            self.status = CodeStatus.RUNNING
 
-        LOGGER.info(f"Usercode process started with pid {self._process.pid}")
+            LOGGER.info(f"Usercode process started with pid {self._process.pid}")
+        else:
+            LOGGER.warning("Unable to start usercode, process already running.")
 
     def stop_execution(self) -> None:
         """Stop the execution of the code."""

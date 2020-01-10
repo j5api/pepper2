@@ -101,6 +101,7 @@ class Pepper2:
         """Kill the currently running usercode."""
         if self.daemon_status is not DaemonStatus.CODE_RUNNING:
             raise ValueError("No usercode is running.")
+
         try:
             result = self._controller.kill_usercode()
         except GLib.Error as e:
@@ -110,6 +111,24 @@ class Pepper2:
 
         if not result:
             raise Pepper2Exception("Unable to kill usercode.")
+
+    def start_usercode(self) -> None:
+        """Start any dead usercode."""
+        if self.daemon_status in [DaemonStatus.CODE_RUNNING, DaemonStatus.CODE_IDLE]:
+            raise ValueError("Usercode is already running.")
+
+        if self.daemon_status in [DaemonStatus.READY, DaemonStatus.STARTING]:
+            raise ValueError("There are no viable usercode drives available.")
+
+        try:
+            result = self._controller.start_usercode()
+        except GLib.Error as e:
+            raise Pepper2Exception(
+                "Error when sending start usercode command.",
+            ) from e
+
+        if not result:
+            raise Pepper2Exception("Unable to start usercode.")
 
     @property
     def usercode_drive(self) -> Drive:

@@ -120,11 +120,26 @@ class Controller:
         """
         LOGGER.debug(f"Usercode kill request over bus.")
         if self.usercode_driver is None or \
-           self.usercode_driver.status is not CodeStatus.RUNNING:
+                self.usercode_driver.status is not CodeStatus.RUNNING:
             return False
         else:
             LOGGER.info("Killing Usercode.")
             self.usercode_driver.stop_execution()
+            return True
+
+    def start_usercode(self) -> bool:
+        """
+        Start any dead usercode.
+
+        :returns: Boolean of success.
+        """
+        LOGGER.debug(f"Usercode start request over bus.")
+        if self.usercode_driver is None or \
+                self.usercode_driver.status is CodeStatus.RUNNING:
+            return False
+        else:
+            LOGGER.info("Starting Usercode.")
+            self.usercode_driver.start_execution()
             return True
 
     # Not exposed on interface.
