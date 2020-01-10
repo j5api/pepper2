@@ -96,3 +96,33 @@ class Pepper2:
             mount_path=Path(raw_data[2]),
             drive_type=drive_type,
         )
+
+    @property
+    def usercode_drive(self) -> Drive:
+        """
+        Get the drive of the executing usercode.
+
+        :returns: the executing drive.
+        """
+        try:
+            uuid = self._controller.usercode_drive
+        except GLib.Error as e:
+            raise Pepper2Exception("Error fetching drive list from daemon.") from e
+
+        if uuid == "":
+            raise ValueError("No usercode is currently executing")
+        else:
+            return self.get_drive(uuid)
+
+    @property
+    def usercode_driver_name(self) -> str:
+        """Get the usercode driver name."""
+        try:
+            name = self._controller.usercode_driver_name
+        except GLib.Error as e:
+            raise Pepper2Exception("Error fetching drive list from daemon.") from e
+
+        if name == "":
+            raise ValueError("No usercode is currently executing")
+        else:
+            return name

@@ -2,7 +2,8 @@
 
 import click
 
-from .status import status
+from .daemon_status import daemon_status
+from .usercode import usercode
 
 
 @click.group('pepperctl')
@@ -11,8 +12,8 @@ def main() -> None:
     pass
 
 
-main.add_command(status)
-
+main.add_command(daemon_status)
+main.add_command(usercode)
 
 if __name__ == "__main__":
     main()
