@@ -16,6 +16,7 @@ from pepper2.daemon.usercode_driver import (
 )
 
 from .drive_type import DriveType
+from .no_action import NoActionDriveType
 
 if TYPE_CHECKING:
     from pepper2.daemon.controller import Controller
@@ -69,6 +70,12 @@ class UserCodeDriveType(DriveType):
                     "Unable to start Usercode: A usercode process "
                     "is already running",
                 )
+
+                # Change drive type so that this usercode does not get executed.
+                LOGGER.debug(
+                    f"Changing drive type of {drive.uuid} to NoActionDriveType"
+                )
+                drive.drive_type = NoActionDriveType
 
     @classmethod
     def unmount_action(cls, drive: 'Drive', daemon_controller: 'Controller') -> None:
