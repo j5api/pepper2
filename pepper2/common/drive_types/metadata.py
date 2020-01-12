@@ -1,7 +1,7 @@
 """Metadata Drive Type."""
 from typing import TYPE_CHECKING
 
-from pepper2.daemon.constraint import Constraint, FilePresentConstraint
+from pepper2.common.constraint import Constraint, FilePresentConstraint
 
 from .drive_type import DriveType
 

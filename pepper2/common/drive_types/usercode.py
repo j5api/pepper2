@@ -3,13 +3,13 @@
 import logging
 from typing import TYPE_CHECKING, Mapping, Type
 
-from pepper2.common.daemon_status import DaemonStatus
-from pepper2.daemon.constraint import (
+from pepper2.common.constraint import (
     Constraint,
     FalseConstraint,
     FilePresentConstraint,
     OrConstraint,
 )
+from pepper2.common.daemon_status import DaemonStatus
 from pepper2.daemon.usercode_driver import (
     PythonUnixProcessDriver,
     UserCodeDriver,

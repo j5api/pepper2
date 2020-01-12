@@ -2,7 +2,7 @@
 
 from typing import TYPE_CHECKING
 
-from pepper2.daemon.constraint import Constraint, TrueConstraint
+from pepper2.common.constraint import Constraint, TrueConstraint
 
 from .drive_type import DriveType
 

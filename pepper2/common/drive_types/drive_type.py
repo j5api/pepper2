@@ -2,7 +2,7 @@
 from abc import ABCMeta, abstractmethod
 from typing import TYPE_CHECKING
 
-from pepper2.daemon.constraint import Constraint
+from pepper2.common.constraint import Constraint
 
 if TYPE_CHECKING:
     from pepper2.daemon.dbus.controller import Controller
