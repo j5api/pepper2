@@ -11,8 +11,8 @@ from systemd.daemon import notify
 
 from pepper2 import __version__
 from pepper2.common.daemon_status import DaemonStatus
+from pepper2.daemon.dbus.controller import Controller
 
-from .controller import Controller
 from .udisks_manager import UDisksManager
 
 LOGGER = logging.getLogger(__name__)
@@ -51,7 +51,7 @@ class PepperDaemon:
     def __init__(self) -> None:
         LOGGER.info(f"Starting v{__version__}.")
 
-        self.controller = Controller(loop)
+        self.controller = Controller(loop, bus)
         self.udisks_manager = UDisksManager(bus, self.controller)
 
         try:

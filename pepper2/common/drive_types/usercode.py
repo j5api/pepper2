@@ -19,7 +19,7 @@ from .drive_type import DriveType
 from .no_action import NoActionDriveType
 
 if TYPE_CHECKING:
-    from pepper2.daemon.controller import Controller
+    from pepper2.daemon.dbus.controller import Controller
     from pepper2.common.drives import Drive
 
 LOGGER = logging.getLogger(__name__)

@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING
 from pepper2.common.drives import Drive
 
 if TYPE_CHECKING:
-    from pepper2.daemon.controller import Controller
+    from pepper2.daemon.dbus.controller import Controller
 
 
 class CodeStatus(str, Enum):

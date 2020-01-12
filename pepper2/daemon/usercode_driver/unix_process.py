@@ -18,7 +18,7 @@ if TYPE_CHECKING:
     # _HANDLER is only available in typeshed.
     from signal import _HANDLER
 
-    from pepper2.daemon.controller import Controller
+    from pepper2.daemon.dbus.controller import Controller
 
 
 LOGGER = logging.getLogger(__name__)

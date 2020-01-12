@@ -5,6 +5,7 @@ from typing import List, Mapping, Optional, Tuple
 
 from gi.repository import GLib
 from pkg_resources import resource_string
+from pydbus.bus import Bus
 from pydbus.generic import signal
 
 from pepper2 import __version__
@@ -31,8 +32,9 @@ class Controller:
 
     PropertiesChanged = signal()
 
-    def __init__(self, loop: GLib.MainLoop):
+    def __init__(self, loop: GLib.MainLoop, bus: Bus):
         self.loop = loop
+        self.bus = bus
         self.data_lock = RLock()
 
         with self.data_lock:

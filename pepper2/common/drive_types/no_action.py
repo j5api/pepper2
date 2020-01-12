@@ -7,7 +7,7 @@ from pepper2.daemon.constraint import Constraint, TrueConstraint
 from .drive_type import DriveType
 
 if TYPE_CHECKING:
-    from pepper2.daemon.controller import Controller
+    from pepper2.daemon.dbus.controller import Controller
     from pepper2.common.drives import Drive
 
 

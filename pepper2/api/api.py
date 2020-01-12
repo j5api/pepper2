@@ -12,7 +12,7 @@ from pepper2.common.drive_types import DRIVE_TYPES
 from pepper2.common.drives import Drive, DriveGroup
 
 if TYPE_CHECKING:
-    from pepper2.daemon.controller import Controller
+    from pepper2.daemon.dbus.controller import Controller
 
 
 class Pepper2:
