@@ -33,12 +33,11 @@ class PublishableGroup(MutableMapping[str, U]):
     def __init__(
             self,
             bus: Bus,
-            sub_path: str,
             *,
             base_path: str = "uk.org.j5.pepper2",
     ) -> None:
         self._bus = bus
-        self._bus_path = auto_bus_name(base_path + "." + sub_path)
+        self._bus_path = auto_bus_name(base_path)
         self._dict: Dict[str, PublishedObject] = {}  # type: ignore
 
     def __setitem__(self, k: str, v: U) -> None:

@@ -1,7 +1,7 @@
 """Pepperd Controller Service."""
 import logging
 from threading import RLock
-from typing import List, Mapping, Optional, Tuple
+from typing import List, Mapping, Optional
 
 from gi.repository import GLib
 from pkg_resources import resource_string
@@ -10,7 +10,6 @@ from pydbus.generic import signal
 
 from pepper2 import __version__
 from pepper2.common.daemon_status import DaemonStatus
-from pepper2.common.drive_types import DRIVE_TYPES
 from pepper2.daemon.dbus.drive import DriveGroup
 from pepper2.daemon.publishable_group import PublishableGroup
 from pepper2.daemon.usercode_driver import CodeStatus, UserCodeDriver
@@ -40,7 +39,7 @@ class Controller:
 
         with self.data_lock:
             self._daemon_status: DaemonStatus = DaemonStatus.STARTING
-            self.drive_group: DriveGroup = PublishableGroup(bus, "Drive")
+            self.drive_group: DriveGroup = PublishableGroup(bus)
             self.usercode_driver: Optional[UserCodeDriver] = None
 
     @property
@@ -95,25 +94,7 @@ class Controller:
     def get_drive_list(self) -> List[str]:
         """Get a list of drives."""
         LOGGER.debug("Drive list request over bus.")
-        return [x for x in self.drive_group.keys()]
-
-    def get_drive(self, uuid: str) -> Tuple[bool, str, str, int]:
-        """
-        Get an individual drive.
-
-        :returns Tuple of (success, uuid, mount_path, type_id)
-        """
-        LOGGER.debug(f"Drive info request for \"{uuid}\" over bus.")
-        if uuid in self.drive_group.keys():
-            drive = self.drive_group[uuid]
-            LOGGER.debug(f"Response: \"{drive.uuid}\" at {drive.mount_path}")
-            return True,\
-                drive.uuid,\
-                str(drive.mount_path.absolute()),\
-                DRIVE_TYPES.index(drive.drive_type)
-        else:
-            LOGGER.debug(f"Response:  No such drive \"{uuid}\"")
-            return False, "", "", -1
+        return list(self.drive_group._dict.keys())
 
     def kill_usercode(self) -> bool:
         """

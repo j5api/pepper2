@@ -1,7 +1,7 @@
 """Classes to interact with drives."""
 
 from pathlib import Path
-from typing import Type
+from typing import Any, Type
 
 from pkg_resources import resource_string
 
@@ -26,6 +26,22 @@ class Drive:
         self._uuid = uuid
         self._mount_path = mount_path
         self._drive_type = drive_type
+
+    @classmethod
+    def from_proxy(cls, proxy_object: Any) -> 'Drive':  # type: ignore
+        """
+        Construct a proper drive object from a proxy object.
+
+        There are some types that we want to use, but cannot send
+        over DBus, for example Path and Type[DriveType]. This is
+        thus part of the slightly hacky code that we use to ensure
+        a nicely typed API on both sides of the bus.
+        """
+        return Drive(
+            uuid=proxy_object.uuid,
+            mount_path=Path(proxy_object.mount_path_str),
+            drive_type=DRIVE_TYPES[proxy_object.drive_type_index],
+        )
 
     @property
     def uuid(self) -> str:

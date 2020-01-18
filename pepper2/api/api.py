@@ -1,6 +1,5 @@
 """Classes to interact with the pepper2 API."""
 
-from pathlib import Path
 from typing import TYPE_CHECKING, Dict
 
 from gi.repository import GLib
@@ -8,7 +7,6 @@ from pydbus import SystemBus
 
 from pepper2.api.error import Pepper2Exception
 from pepper2.common.daemon_status import DaemonStatus
-from pepper2.common.drive_types import DRIVE_TYPES
 from pepper2.daemon.dbus.drive import Drive
 
 if TYPE_CHECKING:
@@ -74,28 +72,12 @@ class Pepper2:
         except GLib.Error as e:
             raise Pepper2Exception("Error fetching drive list from daemon.") from e
 
-        return {drive_uuid: self.get_drive(drive_uuid) for drive_uuid in drive_list}
+        return {uuid: self.get_drive(uuid) for uuid in drive_list}
 
     def get_drive(self, uuid: str) -> Drive:
-        """Get a drive by uuid."""
-        try:
-            raw_data = self._controller.get_drive(uuid)
-        except GLib.Error as e:
-            raise Pepper2Exception("Error fetching drive data from daemon.") from e
-
-        if raw_data[0] == -1:
-            raise ValueError(f"No such drive {uuid}")
-
-        try:
-            drive_type = DRIVE_TYPES[raw_data[3]]
-        except IndexError as e:
-            raise Pepper2Exception("Unknown drive type code.") from e
-
-        return Drive(
-            uuid=raw_data[1],
-            mount_path=Path(raw_data[2]),
-            drive_type=drive_type,
-        )
+        """Get a drive."""
+        bus_id = uuid.replace('-', '_')
+        return Drive.from_proxy(self._bus.get("uk.org.j5.pepper2", bus_id))
 
     def kill_usercode(self) -> None:
         """Kill the currently running usercode."""

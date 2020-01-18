@@ -11,10 +11,6 @@
         <method name='get_drive_list'>
             <arg type='as' name='drives' direction='out'/>
         </method>
-        <method name='get_drive'>
-            <arg type='s' name='uuid' direction='in' />
-            <arg type='(bssi)' name='drive' direction='out' />
-        </method>
         <method name='kill_usercode'>
             <arg type='b' name='success' direction='out' />
         </method>
