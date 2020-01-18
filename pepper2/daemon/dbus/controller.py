@@ -40,7 +40,7 @@ class Controller:
 
         with self.data_lock:
             self._daemon_status: DaemonStatus = DaemonStatus.STARTING
-            self.drive_group: DriveGroup = PublishableGroup(bus)
+            self.drive_group: DriveGroup = PublishableGroup(bus, "Drive")
             self.usercode_driver: Optional[UserCodeDriver] = None
 
     @property

@@ -11,8 +11,15 @@ U = TypeVar("U")
 class PublishableGroup(MutableMapping[T, U], Generic[T, U]):
     """A group of objects that are published to DBus."""
 
-    def __init__(self, bus: Bus) -> None:
+    def __init__(
+            self,
+            bus: Bus,
+            sub_path: str,
+            *,
+            base_path: str = "uk.org.j5.pepper2",
+    ) -> None:
         self._bus = bus
+        self._base_path = base_path
         self._dict: Dict[T, U] = {}
 
     def __setitem__(self, k: T, v: U) -> None:

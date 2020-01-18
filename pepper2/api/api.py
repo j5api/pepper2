@@ -21,9 +21,9 @@ class Pepper2:
     def __init__(
         self,
         *,
-        controller_endpoint: str = "uk.org.j5.pepper2",
+        dbus_path: str = "uk.org.j5.pepper2",
     ) -> None:
-        self._controller_endpoint = controller_endpoint
+        self._dbus_path = dbus_path
 
         self._connect()
 
@@ -35,7 +35,7 @@ class Pepper2:
             raise Pepper2Exception("Unable to connect to system bus.") from e
 
         try:
-            self._controller: Controller = self._bus.get(self._controller_endpoint)
+            self._controller: Controller = self._bus.get(self._dbus_path)
         except GLib.Error as e:
             raise Pepper2Exception("Unable to find daemon on bus.") from e
 
