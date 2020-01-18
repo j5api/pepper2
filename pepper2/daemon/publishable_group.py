@@ -10,7 +10,11 @@ U = TypeVar("U")
 
 
 class PublishedObject(NamedTuple):
-    """An object published on the bus."""
+    """
+    An object published on the bus.
+
+    We must ignore the type on this object, as we are unable to type it.
+    """
 
     bus_path: str
     registration: ObjectRegistration
@@ -18,7 +22,12 @@ class PublishedObject(NamedTuple):
 
 
 class PublishableGroup(MutableMapping[str, U]):
-    """A group of objects that are published to DBus."""
+    """
+    A group of objects that are published to DBus.
+
+    Objects are published to DBus when they are inserted into the group.
+    Objects are removed from the bus when they are deleted.
+    """
 
     def __init__(
             self,
@@ -33,7 +42,7 @@ class PublishableGroup(MutableMapping[str, U]):
 
     def __setitem__(self, k: str, v: U) -> None:
         bus_path = auto_object_path(self._bus_path, k).replace('-', '_')
-        registration = self._bus.register_object(bus_path, v, None)  # TODO: Try catch
+        registration = self._bus.register_object(bus_path, v, None)
 
         published_object = PublishedObject(
             bus_path=bus_path,
