@@ -10,8 +10,6 @@ from typing import TYPE_CHECKING, List, Optional
 
 from systemd import journal
 
-from pepper2.daemon.dbus.drive import Drive
-
 from .usercode_driver import CodeStatus, UserCodeDriver
 
 if TYPE_CHECKING:
@@ -19,6 +17,7 @@ if TYPE_CHECKING:
     from signal import _HANDLER
 
     from pepper2.daemon.dbus.controller import Controller
+    from pepper2.daemon.dbus.drive import Drive
 
 
 LOGGER = logging.getLogger(__name__)
@@ -34,7 +33,7 @@ class LoggerThread(Thread):
     alternative to solutions such as ``script``.
     """
 
-    def __init__(self, process: Popen, drive: Drive):
+    def __init__(self, process: Popen, drive: 'Drive'):
         super().__init__(daemon=True)
         self._process = process
         self._log_file = open(
@@ -96,7 +95,7 @@ class UnixProcessDriver(UserCodeDriver):
     _logger: Optional[LoggerThread]
     _return_code: Optional[int]
 
-    def __init__(self, drive: Drive, daemon_controller: 'Controller'):
+    def __init__(self, drive: 'Drive', daemon_controller: 'Controller'):
         super().__init__(drive, daemon_controller)
 
         self._process = None

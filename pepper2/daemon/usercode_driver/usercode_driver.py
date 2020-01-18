@@ -4,10 +4,9 @@ from abc import ABCMeta, abstractmethod
 from enum import Enum
 from typing import TYPE_CHECKING
 
-from pepper2.daemon.dbus.drive import Drive
-
 if TYPE_CHECKING:
     from pepper2.daemon.dbus.controller import Controller
+    from pepper2.daemon.dbus.drive import Drive
 
 
 class CodeStatus(str, Enum):
@@ -32,10 +31,10 @@ class UserCodeDriver(metaclass=ABCMeta):
     variety of formats and environments, depending on the kit.
     """
 
-    drive: Drive
+    drive: 'Drive'
     _status: CodeStatus
 
-    def __init__(self, drive: Drive, daemon_controller: 'Controller'):
+    def __init__(self, drive: 'Drive', daemon_controller: 'Controller'):
         self.drive = drive
         self.daemon_controller = daemon_controller
         self.status = CodeStatus.STARTING

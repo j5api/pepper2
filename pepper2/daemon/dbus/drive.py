@@ -5,7 +5,7 @@ from typing import Dict, Type
 
 from pkg_resources import resource_string
 
-from pepper2.common.drive_types import DriveType  # , DRIVE_TYPES
+from pepper2.common.drive_types import DRIVE_TYPES, DriveType
 
 DriveGroup = Dict[str, 'Drive']
 
@@ -51,14 +51,14 @@ class Drive:
         """
         self._drive_type = drive_type
 
-    # @property
-    # def drive_type_index(self) -> int:
-    #     """
-    #     An integer representation of the drive type.
-    #
-    #     For transmission over DBus.
-    #     """
-    #     return DRIVE_TYPES.index(self.drive_type)
+    @property
+    def drive_type_index(self) -> int:
+        """
+        An integer representation of the drive type.
+
+        For transmission over DBus.
+        """
+        return DRIVE_TYPES.index(self.drive_type)
 
     @property
     def mount_path_str(self) -> str:
