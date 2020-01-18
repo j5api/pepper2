@@ -9,7 +9,7 @@ from pydbus import SystemBus
 from pepper2.api.error import Pepper2Exception
 from pepper2.common.daemon_status import DaemonStatus
 from pepper2.common.drive_types import DRIVE_TYPES
-from pepper2.common.drives import Drive, DriveGroup
+from pepper2.daemon.dbus.drive import Drive, DriveGroup
 
 if TYPE_CHECKING:
     from pepper2.daemon.dbus.controller import Controller

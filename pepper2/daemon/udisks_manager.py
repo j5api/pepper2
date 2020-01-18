@@ -12,8 +12,8 @@ from pydbus.bus import Bus
 
 from pepper2.common.constraint import Constraint
 from pepper2.common.drive_types import DRIVE_TYPES
-from pepper2.common.drives import Drive, DriveType
 from pepper2.daemon.dbus.controller import Controller
+from pepper2.daemon.dbus.drive import Drive, DriveType
 
 LOGGER = logging.getLogger(__name__)
 

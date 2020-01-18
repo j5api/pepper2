@@ -6,7 +6,7 @@ from pepper2.common.constraint import Constraint
 
 if TYPE_CHECKING:
     from pepper2.daemon.dbus.controller import Controller
-    from pepper2.common.drives import Drive
+    from pepper2.daemon.dbus.drive import Drive
 
 
 class DriveType(metaclass=ABCMeta):
