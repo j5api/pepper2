@@ -12,6 +12,7 @@ from pepper2 import __version__
 from pepper2.common.daemon_status import DaemonStatus
 from pepper2.common.drive_types import DRIVE_TYPES
 from pepper2.daemon.dbus.drive import DriveGroup
+from pepper2.daemon.publishable_group import PublishableGroup
 from pepper2.daemon.usercode_driver import CodeStatus, UserCodeDriver
 
 LOGGER = logging.getLogger(__name__)
@@ -39,7 +40,7 @@ class Controller:
 
         with self.data_lock:
             self._daemon_status: DaemonStatus = DaemonStatus.STARTING
-            self.drive_group: DriveGroup = {}
+            self.drive_group: DriveGroup = PublishableGroup(bus)
             self.usercode_driver: Optional[UserCodeDriver] = None
 
     @property

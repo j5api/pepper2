@@ -1,13 +1,14 @@
 """Classes to interact with drives."""
 
 from pathlib import Path
-from typing import Dict, Type
+from typing import Type
 
 from pkg_resources import resource_string
 
 from pepper2.common.drive_types import DRIVE_TYPES, DriveType
+from pepper2.daemon.publishable_group import PublishableGroup
 
-DriveGroup = Dict[str, 'Drive']
+DriveGroup = PublishableGroup[str, 'Drive']
 
 
 class Drive:
