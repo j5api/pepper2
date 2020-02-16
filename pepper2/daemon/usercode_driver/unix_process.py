@@ -8,16 +8,13 @@ from threading import Thread
 from types import FrameType
 from typing import TYPE_CHECKING, List, Optional
 
-from systemd import journal
-
 from .usercode_driver import CodeStatus, UserCodeDriver
 
 if TYPE_CHECKING:
     # _HANDLER is only available in typeshed.
     from signal import _HANDLER
 
-    from pepper2.daemon.dbus.controller import Controller
-    from pepper2.daemon.dbus.drive import Drive
+    from pepper2.common.drive import Drive
 
 
 LOGGER = logging.getLogger(__name__)
@@ -68,20 +65,11 @@ class LoggerThread(Thread):
         """Log to all locations."""
         if line != "":
             self._log_line_to_file(line)
-            self._log_line_to_systemd(line)
 
     def _log_line_to_file(self, line: str) -> None:
         """Log a line to the logfile."""
         self._log_file.write(line)
         self._log_file.flush()
-
-    def _log_line_to_systemd(
-            self,
-            line: str,
-            identifier: str = "pepper2-usercode",
-    ) -> None:
-        """Log a line to the systemd journal."""
-        journal.send(line, SYSLOG_IDENTIFIER=identifier)
 
 
 class UnixProcessDriver(UserCodeDriver):
@@ -95,8 +83,8 @@ class UnixProcessDriver(UserCodeDriver):
     _logger: Optional[LoggerThread]
     _return_code: Optional[int]
 
-    def __init__(self, drive: 'Drive', daemon_controller: 'Controller'):
-        super().__init__(drive, daemon_controller)
+    def __init__(self, drive: 'Drive'):
+        super().__init__(drive)
 
         self._process = None
         self._logger = None

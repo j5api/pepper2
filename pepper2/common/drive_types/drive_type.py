@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 from pepper2.common.constraint import Constraint
 
 if TYPE_CHECKING:
-    from pepper2.daemon.dbus.drive import Drive
+    from pepper2.common.drive import Drive
 
 
 class DriveType(metaclass=ABCMeta):

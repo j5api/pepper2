@@ -5,8 +5,7 @@ from enum import Enum
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from pepper2.daemon.dbus.controller import Controller
-    from pepper2.daemon.dbus.drive import Drive
+    from pepper2.common.drive import Drive
 
 
 class CodeStatus(str, Enum):
@@ -34,9 +33,8 @@ class UserCodeDriver(metaclass=ABCMeta):
     drive: 'Drive'
     _status: CodeStatus
 
-    def __init__(self, drive: 'Drive', daemon_controller: 'Controller'):
+    def __init__(self, drive: 'Drive'):
         self.drive = drive
-        self.daemon_controller = daemon_controller
         self.status = CodeStatus.STARTING
 
     @abstractmethod
@@ -58,4 +56,3 @@ class UserCodeDriver(metaclass=ABCMeta):
     def status(self, status: CodeStatus) -> None:
         """Set the status of the executing code."""
         self._status = status
-        self.daemon_controller.inform_code_status(status)

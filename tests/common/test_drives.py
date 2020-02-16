@@ -1,8 +1,8 @@
 """Test the Drive class."""
 from pathlib import Path
 
+from pepper2.common.drive import Drive
 from pepper2.common.drive_types import NoActionDriveType
-from pepper2.daemon.dbus.drive import Drive
 
 
 def test_drive_instantiation() -> None:

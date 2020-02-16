@@ -6,7 +6,7 @@ from pepper2.common.constraint import Constraint, FilePresentConstraint
 from .drive_type import DriveType
 
 if TYPE_CHECKING:
-    from pepper2.daemon.dbus.drive import Drive
+    from pepper2.common.drive import Drive
 
 
 class MetadataDriveType(DriveType):

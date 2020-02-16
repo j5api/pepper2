@@ -1,9 +1,0 @@
-<!-- Drive DBus Configuration -->
-<!-- This XML is read by pydbus. -->
-<node>
-    <interface name='uk.org.j5.pepper2.Drive'>
-        <property name="uuid" type="s" access="read"></property>
-        <property name="mount_path_str" type="s" access="read"></property>
-        <property name="drive_type_index" type="i" access="read"></property>
-    </interface>
-</node>

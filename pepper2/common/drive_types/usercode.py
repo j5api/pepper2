@@ -17,7 +17,7 @@ from pepper2.daemon.usercode_driver import (
 from .drive_type import DriveType
 
 if TYPE_CHECKING:
-    from pepper2.daemon.dbus.drive import Drive
+    from pepper2.common.drive import Drive
 
 LOGGER = logging.getLogger(__name__)
 

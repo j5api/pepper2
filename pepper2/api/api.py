@@ -3,7 +3,7 @@
 from typing import Dict
 
 from pepper2.common.daemon_status import DaemonStatus
-from pepper2.daemon.dbus.drive import Drive
+from pepper2.common.drive import Drive
 
 
 class Pepper2:
