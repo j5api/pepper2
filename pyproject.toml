@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pepper2"
-version = "0.1.0a2"
+version = "0.2.0dev"
 description = "Robot Management Daemon"
 authors = ["Dan Trickey <dan@trickey.io>"]
 license = "MIT"
@@ -16,9 +16,6 @@ classifiers = [
 [tool.poetry.dependencies]
 python = "^3.6"
 click = "^7.0"
-systemd-python = "^234.0"
-pydbus = "^0.6.0"
-pygobject = "^3.32"
 
 [tool.poetry.dev-dependencies]
 flake8 = "^3.7"
@@ -34,9 +31,6 @@ pytest = "^5.1"
 pytest-cov = "^2.7"
 rope = "^0.14.0"
 isort = {version = "^4.3",extras = ["pyproject"]}
-
-# See https://gitlab.com/pycqa/flake8-docstrings/issues/36
-pydocstyle = "~4"
 
 [tool.poetry.scripts]
 pepperctl = 'pepper2.cli.app:main'
