@@ -7,9 +7,13 @@ import uvicorn
 from pepper2 import __version__
 from pepper2.daemon.daemon import PepperDaemon
 
+from .api import core_router
+
 LOGGER = logging.getLogger(__name__)
 
 app = PepperDaemon()
+
+app.include_router(core_router)
 
 
 @click.command("pepperd")
