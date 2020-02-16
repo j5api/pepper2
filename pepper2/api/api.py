@@ -2,17 +2,33 @@
 
 from typing import Dict
 
+import requests
+
 from pepper2.common.daemon_status import DaemonStatus
 from pepper2.common.drive import Drive
+
+from .error import Pepper2Exception
 
 
 class Pepper2:
     """Class to interact with pepper2 daemon."""
 
+    def __init__(
+            self,
+            *,
+            session: requests.Session = requests.Session(),
+            endpoint: str = "http://localhost:7032",
+    ) -> None:
+        self._session = session
+        self._endpoint = endpoint
+
     @property
     def daemon_version(self) -> str:
         """Get the daemon version."""
-        raise NotImplementedError("Cannot fetch daemon version")
+        response = self._session.get(f"{self._endpoint}/version")
+        if response.status_code != 200:
+            raise Pepper2Exception(response.content)
+        return str(response.json())
 
     @property
     def daemon_status(self) -> DaemonStatus:
