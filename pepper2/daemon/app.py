@@ -23,14 +23,7 @@ def main(*, verbose: bool) -> None:
             datefmt="%Y-%m-%d %H:%M:%S",
         )
 
-    PepperDaemon()
-
-
-class PepperDaemon:
-    """The pepper2 daemon."""
-
-    def __init__(self) -> None:
-        LOGGER.info(f"Starting v{__version__}.")
+    LOGGER.info(f"Starting v{__version__}.")
 
 
 if __name__ == "__main__":

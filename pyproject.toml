@@ -36,7 +36,7 @@ isort = {version = "^4.3",extras = ["pyproject"]}
 
 [tool.poetry.scripts]
 pepperctl = 'pepper2.cli.app:main'
-pepperd = 'pepper2.daemon.daemon:main'
+pepperd = 'pepper2.daemon.app:main'
 
 
 [build-system]
