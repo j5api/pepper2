@@ -2,15 +2,28 @@
 import logging
 
 import click
+import uvicorn
 
 from pepper2 import __version__
+from pepper2.daemon.daemon import PepperDaemon
 
 LOGGER = logging.getLogger(__name__)
 
+app = PepperDaemon()
+
 
 @click.command("pepperd")
-@click.option('-v', '--verbose', is_flag=True)
-def main(*, verbose: bool) -> None:
+@click.option('--port', type=int, default=7032, help="Bind server to port.")  # "p2"=7032
+@click.option('--host', type=str, default="localhost", help="Bind server to host.")
+@click.option('-v', '--verbose', is_flag=True, help="Enable verbose logging.")
+@click.option('--dev', is_flag=True, help="Enable development mode.")
+def main(
+        *,
+        port: int,
+        host: str,
+        verbose: bool,
+        dev: bool,
+) -> None:
     """Pepper2 Daemon."""
     if verbose:
         logging.basicConfig(
@@ -24,6 +37,14 @@ def main(*, verbose: bool) -> None:
         )
 
     LOGGER.info(f"Starting v{__version__}.")
+    uvicorn.run(
+        'pepper2.daemon.app:app',
+        host=host,
+        port=port,
+        debug=dev,
+        reload=dev,
+        workers=1,  # Exactly one worker.
+    )
 
 
 if __name__ == "__main__":
