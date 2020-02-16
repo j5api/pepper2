@@ -5,7 +5,6 @@ from typing import TYPE_CHECKING
 from pepper2.common.constraint import Constraint
 
 if TYPE_CHECKING:
-    from pepper2.daemon.dbus.controller import Controller
     from pepper2.daemon.dbus.drive import Drive
 
 
@@ -29,23 +28,23 @@ class DriveType(metaclass=ABCMeta):
         raise NotImplementedError  # pragma: nocover
 
     @classmethod
-    def start_action(cls, drive: 'Drive', daemon_controller: 'Controller') -> None:
+    def start_action(cls, drive: 'Drive') -> None:
         """
         Perform the start action.
 
         This is called on drives when pepperd is started and the drive is
         already inserted in the system. Defaults to calling the mount action.
         """
-        cls.mount_action(drive, daemon_controller)
+        cls.mount_action(drive)
 
     @classmethod
     @abstractmethod
-    def mount_action(cls, drive: 'Drive', daemon_controller: 'Controller') -> None:
+    def mount_action(cls, drive: 'Drive') -> None:
         """Perform the mount action."""
         raise NotImplementedError  # pragma: nocover
 
     @classmethod
     @abstractmethod
-    def unmount_action(cls, drive: 'Drive', daemon_controller: 'Controller') -> None:
+    def unmount_action(cls, drive: 'Drive') -> None:
         """Perform the unmount/remove action."""
         raise NotImplementedError  # pragma: nocover
