@@ -21,4 +21,5 @@ class PepperDaemon(FastAPI):
             title="Pepper2 Daemon",
             description="Robot Control Daemon",
             version=__version__,
+            redoc_url=None,
         )
