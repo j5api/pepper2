@@ -1,16 +1,9 @@
 """Classes to interact with the pepper2 API."""
 
-from typing import TYPE_CHECKING, Dict
+from typing import Dict
 
-from gi.repository import GLib
-from pydbus import SystemBus
-
-from pepper2.api.error import Pepper2Exception
 from pepper2.common.daemon_status import DaemonStatus
 from pepper2.daemon.dbus.drive import Drive
-
-if TYPE_CHECKING:
-    from pepper2.daemon.dbus.controller import Controller
 
 
 class Pepper2:

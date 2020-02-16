@@ -1,7 +1,7 @@
 """Usercode Drive Type."""
 
 import logging
-from typing import Mapping, Type
+from typing import TYPE_CHECKING, Mapping, Type
 
 from pepper2.common.constraint import (
     Constraint,
@@ -9,13 +9,15 @@ from pepper2.common.constraint import (
     FilePresentConstraint,
     OrConstraint,
 )
-
 from pepper2.daemon.usercode_driver import (
     PythonUnixProcessDriver,
     UserCodeDriver,
 )
 
 from .drive_type import DriveType
+
+if TYPE_CHECKING:
+    from pepper2.daemon.dbus.drive import Drive
 
 LOGGER = logging.getLogger(__name__)
 
